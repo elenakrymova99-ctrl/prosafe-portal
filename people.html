@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>On Boarding в ProSafe — Люди ProSafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="people">
+<div class="app">
+  <aside id="aside"></aside>
+  <main id="view" tabindex="-1">
+    <div class="topbar"><div><h1>Люди ProSafe</h1></div>
+      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="home">Главная</button>
+      <button class="tab" role="tab" data-tab="history">История компании</button>
+      <button class="tab" role="tab" data-tab="org">Оргструктура</button>
+      <button class="tab" role="tab" data-tab="faq">FAQ</button>
+    </div>
+    <section data-panel="home" hidden>
+    <label for="people-q">Поиск сотрудников</label>
+    <input id="people-q" oninput="renderPeopleSearch(this.value)" placeholder="ФИО, должность или отдел">
+    <div id="people-results" style="margin-top:12px"></div>
+    <div class="row3" style="margin-top:20px"><button class="block-btn" onclick="showDir('Офис')"><div class="lbl">Офис</div><div class="num" id="dir-cnt-Офис">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Склад')"><div class="lbl">Склад</div><div class="num" id="dir-cnt-Склад">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Производство')"><div class="lbl">Производство</div><div class="num" id="dir-cnt-Производство">0</div><div class="lbl">сотрудников</div></button></div>
+    <h2 style="margin-top:28px">Частые темы</h2>
+    <p class="hint">Не знаешь к кому обратиться? Выбери тему — подскажем, кто поможет.</p>
+    <div class="row3" style="margin-top:12px"><button class="block-btn" onclick="openTopic('Отпуск')"><b>Отпуск</b></button><button class="block-btn" onclick="openTopic('Пропуск и доступ')"><b>Пропуск и доступ</b></button><button class="block-btn" onclick="openTopic('Зарплата и табель')"><b>Зарплата и табель</b></button><button class="block-btn" onclick="openTopic('Оборудование и ТБ')"><b>Оборудование и ТБ</b></button><button class="block-btn" onclick="openTopic('IT и учётные записи')"><b>IT и учётные записи</b></button><button class="block-btn" onclick="openTopic('Командировки')"><b>Командировки</b></button></div>
+    </section>
+    <section data-panel="history" hidden>
+    <div class="history-shell">
+      <div class="history-header">
+        <div>
+          <div class="history-eyebrow">О компании</div>
+          <h2>История компании</h2>
+        </div>
+        <div class="history-actions">
+          <button id="history-edit-btn" class="btn btn-primary" type="button" onclick="toggleHistoryEditor(true)">Редактировать</button>
+        </div>
+      </div>
+      <div class="history-meta">Краткая история помогает новым сотрудникам понять, как росла и развивалась компания.</div>
+
+      <div id="history-view" class="history-view"></div>
+
+      <div id="history-editor-wrap" class="history-editor-wrap" hidden>
+        <textarea id="history-text" class="history-editor" rows="12" placeholder="Например: Компания ProSafe была основана ..."></textarea>
+        <div class="history-footer">
+          <span class="pill lime">Режим редактирования</span>
+          <div class="history-actions">
+            <button class="btn" type="button" onclick="toggleHistoryEditor(false)">Отмена</button>
+            <button class="btn btn-primary" type="button" onclick="saveHistory()">Сохранить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+    <section data-panel="org" hidden>
+    <div id="org-chart" class="org-chart"></div>
+    </section>
+    <section data-panel="faq" hidden>
+    <div class="actions"><button class="btn btn-primary" onclick="openFaq()">Добавить вопрос</button></div>
+    <div id="faq-list"></div>
+    </section>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

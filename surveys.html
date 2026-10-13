@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>On Boarding в ProSafe — Опросы и результаты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="surveys">
+<div class="app">
+  <aside id="aside"></aside>
+  <main id="view" tabindex="-1">
+    <div class="topbar"><div><h1>Опросы и результаты</h1></div>
+      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="overview" aria-selected="true">Обзор</button>
+      <button class="tab" role="tab" data-tab="eval">Запрос на оценку</button>
+      <button class="tab" role="tab" data-tab="create">Создать опрос</button>
+      <button class="tab" role="tab" data-tab="list">Список опросов</button>
+      <button class="tab" role="tab" data-tab="res-evals">Результаты оценок</button>
+      <button class="tab" role="tab" data-tab="res-surveys">Результаты опросов</button>
+      <button class="tab" role="tab" data-tab="ideas">Банк идей</button>
+    </div>
+    <section data-panel="overview">
+      <div id="survey-overview"></div>
+    </section>
+    <section data-panel="eval" hidden>
+    <div class="card survey-compact" style="max-width:640px"><h3>Запросить оценку адаптации</h3>
+      <p class="hint">Критерии берутся из шаблона должности. Оценка 1–5 и комментарий.</p>
+      <label for="ev-emp">Сотрудник</label><select id="ev-emp"></select>
+      <label for="ev-rec">Кому отправить</label><select id="ev-rec"><option>Руководитель адаптации</option><option>Наставник</option><option>Оба</option></select>
+      <div class="actions" style="margin-top:16px"><button class="btn btn-primary" onclick="sendEval()">Отправить запрос</button></div>
+    </div>
+    </section>
+    <section data-panel="create" hidden>
+<div class="card survey-compact"><div class="actions" style="margin:0"><button class="btn btn-primary" onclick="openSurvey()">Создать опрос</button></div>
+    <p class="hint">Опрос назначается по должности или по сотруднику.</p></div>
+    </section>
+    <section data-panel="list" hidden>
+    <div id="survey-list"></div>
+    </section>
+    <section data-panel="res-evals" hidden>
+    <div id="res-evals"></div>
+    <p class="hint">Содержимое оценок видит только HR.</p>
+    </section>
+    <section data-panel="res-surveys" hidden>
+    <div id="res-surveys"></div>
+    </section>
+    <section data-panel="ideas" hidden>
+    <div id="ideas-list"></div>
+    </section>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

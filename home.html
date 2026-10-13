@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>On Boarding в ProSafe — Главная</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="home">
+<div class="app">
+  <aside id="aside"></aside>
+  <main id="view" tabindex="-1">
+    <div class="topbar"><div><h1>Главная</h1><div class="hint">Дашборд HR</div></div></div>
+    <div class="actions"><button class="btn btn-primary" onclick="openCreateEmployee()">Создать сотрудника</button></div>
+    <div class="grid">
+      <a class="kpi" href="reports.html?tab=adapt-count"><div class="card"><div class="num" id="k-adapt">0</div><div class="lbl">Сотрудники на адаптации</div></div></a>
+      <a class="kpi" href="reports.html?tab=waiting"><div class="card"><div class="num" id="k-waiting">0</div><div class="lbl">Ждут проверки</div></div></a>
+      <a class="kpi" href="reports.html?tab=answers"><div class="card"><div class="num" id="k-answers">0</div><div class="lbl">Новые ответы на опросы</div></div></a>
+      <a class="kpi" href="reports.html?tab=drops"><div class="card"><div class="num" id="k-drops">0</div><div class="lbl">Снижение оценок</div></div></a>
+      <a class="kpi" href="surveys.html?tab=ideas"><div class="card"><div class="num" id="k-ideas">0</div><div class="lbl">Новые идеи в банке</div></div></a>
+    </div>
+    <h2>Список сотрудников и их прогресс</h2>
+    <div id="home-adapt"></div>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>
