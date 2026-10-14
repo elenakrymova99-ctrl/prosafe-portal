@@ -13,17 +13,14 @@
     <section class="login-card" aria-labelledby="login-title">
       <a class="login-brand" href="login.html">On Boarding <span>в ProSafe</span></a>
       <div class="login-kicker">Единое пространство команды</div>
-      <h1 id="login-title">Вход в портал</h1>
-      <p class="login-intro">Введите корпоративный email и пароль учётной записи Supabase.</p>
-      <form id="login-form" novalidate>
-        <label for="login-name">Корпоративный email</label>
-        <input id="login-name" name="username" type="email" autocomplete="username" required autofocus>
-        <label for="login-password">Пароль</label>
-        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
-        <div id="login-error" class="login-error" role="alert" hidden></div>
-        <button class="btn btn-primary login-submit" type="submit">Войти</button>
-      </form>
-      <p class="login-disclaimer">У каждой учётной записи должна быть назначена роль и связанный профиль сотрудника в базе портала.</p>
+      <h1 id="login-title">Демо-вход в портал</h1>
+      <p class="login-intro">Выберите роль для просмотра демонстрационной версии портала.</p>
+      <div id="login-error" class="login-error" role="alert" hidden></div>
+      <div class="demo-login-actions">
+        <button class="btn btn-primary" id="demo-login-hr" type="button">Зайти как HR</button>
+        <button class="btn" id="demo-login-employee" type="button">Зайти как сотрудник</button>
+      </div>
+      <p class="login-disclaimer">Демо-режим работает только в этом браузере. Изменения не сохраняются в Supabase, а эти кнопки не создают реальные учетные записи.</p>
     </section>
     <aside class="login-aside" aria-hidden="true">
       <div class="login-aside-mark">P</div>

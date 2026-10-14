@@ -178,6 +178,9 @@ main.login-page{max-width:none}
 .login-intro{color:var(--color-text-muted);margin:0 0 22px}
 .login-card form label{margin-top:14px}
 .login-submit{justify-content:center;width:100%;margin-top:20px}
+.demo-login-actions{display:grid;gap:12px;margin-top:24px}
+.demo-login-actions .btn{width:100%;justify-content:center}
+.demo-login-actions .btn:not(.btn-primary){background:#fff}
 .login-error{margin-top:12px;padding:10px 12px;background:#fff1ed;border:1px solid #d49a82;border-radius:10px;color:#713b28;font-size:14px}
 .login-demo{display:grid;gap:5px;margin-top:22px;padding:14px 16px;background:#F8F5EF;border-radius:12px;font-size:13px;color:var(--color-text-muted)}
 .login-demo strong{color:var(--color-text);margin-bottom:2px}

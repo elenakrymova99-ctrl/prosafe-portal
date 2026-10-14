@@ -1,5 +1,6 @@
 // ===== On Boarding в ProSafe — общий код прототипа кабинета HR =====
 const KEY = 'prosafe.proto.v1';
+const DEMO_ACCOUNT_KEY = 'prosafe.demo.account.v1';
 const THEME_KEY = 'prosafe.theme.v1';
 const THEMES = [
   {id:'prosafe',name:'Стандартная'},
@@ -479,6 +480,22 @@ async function saveEmployee(){
     adaptation_enabled:EMP.adapt
   };
   try{
+    if(currentUser()?.demo){
+      const id = Date.now();
+      const e = {
+        id, name:input.name, pos:input.job_title, dept:input.department, dir:input.direction,
+        mgr:r['Руководитель адаптации']||'—', phone:input.phone||'—', email:input.email,
+        contacts:true, adapt:input.adaptation_enabled, start:input.start_date||'',
+        status:input.adaptation_enabled?'Активна':'Без адаптации', resp:{...r}
+      };
+      DB.employees.push(e);
+      if(EMP.adapt) DB.tasks[id] = EMP.plan.map(task => ({...task,status:'Назначена'}));
+      save();
+      $('dlg').close();
+      if(window.PAGE_RENDER) window.PAGE_RENDER();
+      toast('Демо-карточка сохранена только в этом браузере; учетная запись Supabase не создавалась');
+      return;
+    }
     const created = await manageSupabaseEmployee({action:'create_employee',employee:input});
     const id = supabaseEmployeeAppId(created.employee);
     const e = {
@@ -1415,20 +1432,33 @@ function supabaseHeaders(accessToken){
   };
 }
 async function supabaseRequest(path,{method='GET',body,accessToken,prefer}={}){
-  const response = await fetch(`${SUPABASE_URL}${path}`,{
-    method,
-    headers:{...supabaseHeaders(accessToken),...(prefer ? {Prefer:prefer} : {})},
-    ...(body === undefined ? {} : {body:JSON.stringify(body)})
-  });
+  let response;
+  try{
+    response = await fetch(`${SUPABASE_URL}${path}`,{
+      method,
+      headers:{...supabaseHeaders(accessToken),...(prefer ? {Prefer:prefer} : {})},
+      ...(body === undefined ? {} : {body:JSON.stringify(body)})
+    });
+  }catch(error){
+    const details = error instanceof Error ? error.message : String(error);
+    throw new Error(`Не удалось выполнить запрос ${method} ${path}: ${details}`);
+  }
   const text = await response.text();
   let result = null;
   if(text){
     try{ result = JSON.parse(text); }
-    catch{ throw new Error('Supabase вернул ответ в неизвестном формате.'); }
+    catch{
+      if(!response.ok){
+        throw new Error(`Запрос ${method} ${path} завершился с HTTP ${response.status}; сервер вернул ответ не в JSON.`);
+      }
+      throw new Error(`Supabase вернул ответ в неизвестном формате для ${method} ${path}.`);
+    }
   }
   if(!response.ok){
     const message = result?.msg || result?.message || result?.error_description || result?.error || `HTTP ${response.status}`;
-    throw new Error(`Ошибка Supabase: ${message}`);
+    const code = result?.code ? ` (${result.code})` : '';
+    const hint = result?.hint ? ` Подсказка: ${result.hint}` : '';
+    throw new Error(`Ошибка Supabase ${response.status} при запросе ${method} ${path}${code}: ${message}.${hint}`);
   }
   return result;
 }
@@ -1652,18 +1682,45 @@ async function uploadOrOpenEmployeeMaterial(item){
 }
 function currentUser(){
   try{
+    const demoAccount = JSON.parse(localStorage.getItem(DEMO_ACCOUNT_KEY) || 'null');
+    if(demoAccount?.demo === true && SUPABASE_ROLE_NAMES && Object.values(SUPABASE_ROLE_NAMES).includes(demoAccount.role)) return demoAccount;
     const account = JSON.parse(localStorage.getItem(SUPABASE_ACCOUNT_KEY) || 'null');
     return account && SUPABASE_ROLE_NAMES && Object.values(SUPABASE_ROLE_NAMES).includes(account.role) ? account : null;
   }
   catch(e){ return null; }
 }
 function logout(){
+  localStorage.removeItem(DEMO_ACCOUNT_KEY);
   clearSupabaseSession();
   location.replace('login.html');
+}
+function startDemoLogin(role){
+  const isEmployee = role === 'employee';
+  const account = isEmployee
+    ? {demo:true,id:'demo-employee',name:'Анна Михайлова',login:'a.mikhaylova@prosafe.ru',email:'a.mikhaylova@prosafe.ru',role:'Сотрудник с адаптацией',employeeId:101,managedEmployeeIds:[],status:'Активна'}
+    : {demo:true,id:'demo-hr',name:'Елена Соловьева',login:'e.soloveva@prosafe.ru',email:'e.soloveva@prosafe.ru',role:'HR',employeeId:104,managedEmployeeIds:[],status:'Активна'};
+  try{
+    clearSupabaseSession();
+    localStorage.setItem(DEMO_ACCOUNT_KEY,JSON.stringify(account));
+    location.replace(isEmployee ? 'employee.html?tab=overview' : 'home.html');
+  }catch(error){
+    const message = $('login-error');
+    if(message){
+      message.textContent = `Не удалось запустить демо-вход: ${error.message}`;
+      message.hidden = false;
+    }
+  }
 }
 function renderLogin(){
   const user = currentUser();
   if(user){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
+  const demoHr = $('demo-login-hr');
+  const demoEmployee = $('demo-login-employee');
+  if(demoHr && demoEmployee){
+    demoHr.addEventListener('click',() => startDemoLogin('hr'));
+    demoEmployee.addEventListener('click',() => startDemoLogin('employee'));
+    return;
+  }
   const form = $('login-form');
   if(!form) return;
   form.addEventListener('submit', async event => {
@@ -2088,7 +2145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const p = document.body.dataset.page;
   let user;
   try{
-    user = await restoreSupabaseSession();
+    user = currentUser()?.demo ? currentUser() : await restoreSupabaseSession();
   }catch(error){
     const main = $('view') || document.querySelector('.login-card');
     if(main){
@@ -2104,7 +2161,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if(!user){ location.replace('login.html'); return; }
   if(p === 'welcome'){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
   if(p === 'employee' && !isEmployeeRole(user.role)){ location.replace('home.html'); return; }
-  if(p === 'employee' || p === 'people' || p === 'docs'){
+  const demoMode = user.demo === true;
+  if(!demoMode && (p === 'employee' || p === 'people' || p === 'docs')){
     try{
       await loadSupabaseEmployeeContent();
     }catch(error){
@@ -2119,7 +2177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
   }
-  if(p === 'access'){
+  if(!demoMode && p === 'access'){
     try{
       await loadSupabaseDirectory();
       await loadSupabaseAccessUsers();
@@ -2135,7 +2193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
   }
-  if(p === 'staff'){
+  if(!demoMode && p === 'staff'){
     try{
       await loadSupabaseDirectory();
     }catch(error){
