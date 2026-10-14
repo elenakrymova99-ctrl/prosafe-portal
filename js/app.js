@@ -597,6 +597,7 @@ function orgChartMarkup(){
 }
 function drawOrg(target='org-chart'){
   const box = typeof target === 'string' ? $(target) : target; if(!box) return;
+  bindOrgChart(box);
   const svg = box.querySelector('svg'); if(!svg) return;
   const r0 = box.getBoundingClientRect(); if(!r0.width) return;   // вкладка скрыта
   svg.setAttribute('width', box.scrollWidth); svg.setAttribute('height', box.scrollHeight);
@@ -614,27 +615,54 @@ function drawOrg(target='org-chart'){
     svg.appendChild(p);
   });
 }
-function chainOf(node){
-  const box = $('org-chart'), chain = [];
+function chainOf(node, box){
+  const chain = [];
   let cur = node;
   while(cur){ chain.push(cur.dataset.node); const p = cur.dataset.parent; cur = p ? box.querySelector(`[data-node="${CSS.escape(p)}"]`) : null; }
   return chain;
 }
-function clearHl(){ const box = $('org-chart'); if(box) box.querySelectorAll('.hl').forEach(n => n.classList.remove('hl')); }
-function highlightChain(node){
-  clearHl(); if(!node) return;
-  const box = $('org-chart'), chain = chainOf(node);
+function clearHl(target='org-chart'){
+  const box = typeof target === 'string' ? $(target) : target;
+  if(box) box.querySelectorAll('.hl').forEach(n => n.classList.remove('hl'));
+}
+function highlightChain(node, target='org-chart'){
+  const box = typeof target === 'string' ? $(target) : target;
+  clearHl(box); if(!node || !box) return;
+  const chain = chainOf(node, box);
   chain.forEach(id => { const el = box.querySelector(`[data-node="${CSS.escape(id)}"]`); if(el) el.classList.add('hl'); });
   box.querySelectorAll('.org-edge').forEach(p => { if(chain.includes(p.dataset.child)) p.classList.add('hl'); });
 }
-function bindOrgTab(){
-  const box = $('org-chart'); if(!box || box.dataset.bound) return;
+let orgResizeBound = false;
+function bindOrgChart(box){
+  if(!box || box.dataset.bound) return;
   box.dataset.bound = '1';
-  box.addEventListener('mouseover', ev => { const n = ev.target.closest('[data-node]'); if(n) highlightChain(n); });
-  box.addEventListener('mouseleave', clearHl);
+  box.addEventListener('mouseover', ev => {
+    const node = ev.target.closest('[data-node]');
+    if(node && box.contains(node)) highlightChain(node, box);
+  });
+  box.addEventListener('focusin', ev => {
+    const node = ev.target.closest('[data-node]');
+    if(node && box.contains(node)) highlightChain(node, box);
+  });
+  box.addEventListener('mouseleave', () => clearHl(box));
+  box.addEventListener('focusout', ev => {
+    if(!box.contains(ev.relatedTarget)) clearHl(box);
+  });
+  if(!orgResizeBound){
+    orgResizeBound = true;
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.org-chart').forEach(chart => drawOrg(chart));
+    });
+  }
+}
+function bindOrgTab(){
+  const box = $('org-chart'); if(!box) return;
+  bindOrgChart(box);
   const tab = document.querySelector('[data-tab="org"]');
-  if(tab) tab.addEventListener('click', () => setTimeout(() => drawOrg(), 0));
-  window.addEventListener('resize', () => drawOrg());
+  if(tab && !tab.dataset.orgBound){
+    tab.dataset.orgBound = '1';
+    tab.addEventListener('click', () => setTimeout(() => drawOrg(), 0));
+  }
 }
 
 function openMaterial(){ simpleDialog('Новый материал', [{k:'title',l:'Название',req:true},{k:'type',l:'Тип',opts:['Текст','PDF','Файл']}], v => DB.materials.push(v)); }
@@ -1400,7 +1428,7 @@ function renderEmployeePortal(){
   set('employee-org', `<div class="employee-section-intro"><span class="survey-kicker">Команда ProSafe</span><h2>Оргструктура</h2><p class="hint">Организационная структура доступна только для просмотра.</p></div><div id="employee-org-chart" class="org-chart">${orgChartMarkup()}</div>`);
   set('employee-faq', `
     <div class="employee-section-intro"><span class="survey-kicker">Помощь</span><h2>Частые вопросы</h2><p class="hint">Ответы доступны только для просмотра.</p></div>
-    <div class="employee-panel">${DB.faq.length ? DB.faq.map(item => `<details class="employee-faq"><summary>${esc(item.q)}</summary><p>${esc(item.a)}</p></details>`).join('') : '<p class="hint">Ответы на вопросы скоро появятся.</p>'}</div>`);
+    <div class="employee-faq-list">${DB.faq.length ? DB.faq.map(item => `<article class="card"><h3>${esc(item.q)}</h3><p>${esc(item.a)}</p></article>`).join('') : '<div class="card empty">Ответы на вопросы скоро появятся.</div>'}</div>`);
 
   const responses = DB.surveyResponses || [];
   const availableSurveys = DB.surveys.filter(survey => survey.status === 'Активна' && (!survey.aud || survey.aud === 'Общий' || survey.aud === 'Все' || survey.aud === 'По должности' || survey.aud === 'По сотруднику'));
