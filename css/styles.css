@@ -22,6 +22,10 @@ nav a:hover{background:rgba(241,233,221,.08)}
 nav a[aria-current="page"]{background:var(--color-terracotta);color:#fff;font-weight:600}
 .sep{height:1px;background:rgba(216,204,187,.25);margin:12px}
 .sidebar-footer{margin-top:auto;padding:12px 8px 0}
+.theme-picker{padding:12px 12px 16px}
+.theme-picker label{display:block;color:var(--color-sand);font-size:12px;margin:0 0 6px}
+.theme-picker select{min-height:40px;padding:8px 10px;font-size:13px}
+.theme-picker small{display:block;color:var(--color-sand);font-size:11px;line-height:1.4;margin-top:6px}
 .support-card{background:rgba(255,255,255,.06);border:1px solid rgba(216,204,187,.25);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
 .support-title{font-family:var(--font-heading);font-size:18px;color:#fff;font-weight:600}
 .support-copy{font-size:13px;line-height:1.5;color:rgba(241,233,221,.9)}
@@ -364,3 +368,182 @@ button, .btn{transition:background-color .15s ease,border-color .15s ease,color 
   .content-actions{margin:12px 0}
   .staff-table{margin:12px 0 20px}
   .bulk-actions{margin:12px 0 0}
+
+/* Dopamine decor theme supplied for the portal. */
+body.portal-theme-dopamine{
+  --dopa-pink-pastel:#f7a8b8;
+  --dopa-lavender:#b5a4ed;
+  --dopa-yellow:#ffd166;
+  --dopa-orange:#ff6b35;
+  --dopa-green:#386641;
+  --dopa-neon-pink:#ff007f;
+  --dopa-bg:#fefcfb;
+  --dopa-surface:#fff9f5;
+  --dopa-text:#2b2d42;
+  --dopa-radius-blob:38% 62% 63% 37% / 41% 44% 56% 59%;
+  --dopa-radius-pill:50px;
+  --dopa-radius-card:28px;
+  --dopa-radius-sm:14px;
+  --dopa-border:3px solid var(--dopa-text);
+  --dopa-shadow-hard:6px 6px 0 var(--dopa-text);
+  --dopa-shadow-hard-lg:10px 10px 0 var(--dopa-text);
+  --dopa-shadow-soft:0 12px 32px rgba(181,164,237,.3);
+  --color-cream:var(--dopa-bg);
+  --color-olive:var(--dopa-text);
+  --color-lime:var(--dopa-yellow);
+  --color-terracotta:var(--dopa-orange);
+  --color-sand:var(--dopa-pink-pastel);
+  --color-white:var(--dopa-surface);
+  --color-text:var(--dopa-text);
+  --color-text-muted:#55566b;
+  --color-border:var(--dopa-text);
+  --font-heading:"Fredoka","Comfortaa","Montserrat",var(--font-interface),sans-serif;
+  --font-interface:"Fredoka","Comfortaa","Montserrat",system-ui,sans-serif;
+  --radius-card:var(--dopa-radius-card);
+  --radius-button:var(--dopa-radius-pill);
+  --radius-input:var(--dopa-radius-sm);
+  --shadow-card:var(--dopa-shadow-hard);
+  background-color:var(--dopa-bg);
+  color:var(--dopa-text);
+  font-family:var(--font-interface);
+}
+body.portal-theme-dopamine aside{
+  background:var(--dopa-text);
+  border-right:3px solid var(--dopa-text);
+}
+body.portal-theme-dopamine nav a[aria-current="page"]{
+  background:var(--dopa-yellow);
+  color:var(--dopa-text);
+  border:2px solid var(--dopa-text);
+  box-shadow:3px 3px 0 var(--dopa-orange);
+}
+body.portal-theme-dopamine .card,
+body.portal-theme-dopamine .history-shell,
+body.portal-theme-dopamine .survey-shell,
+body.portal-theme-dopamine .history-view,
+body.portal-theme-dopamine .employee-welcome,
+body.portal-theme-dopamine .employee-stat,
+body.portal-theme-dopamine .employee-panel,
+body.portal-theme-dopamine .employee-task-card,
+body.portal-theme-dopamine .employee-profile-card,
+body.portal-theme-dopamine .survey-card,
+body.portal-theme-dopamine .survey-kpi,
+body.portal-theme-dopamine .report-summary,
+body.portal-theme-dopamine .report-side,
+body.portal-theme-dopamine .report-download-card,
+body.portal-theme-dopamine .popular-block,
+body.portal-theme-dopamine .plan-template-item,
+body.portal-theme-dopamine .login-card,
+body.portal-theme-dopamine .history-meta,
+body.portal-theme-dopamine .note{
+  background-color:var(--dopa-surface);
+  border:var(--dopa-border);
+  border-radius:var(--dopa-radius-card);
+  box-shadow:var(--dopa-shadow-hard);
+}
+body.portal-theme-dopamine .card,
+body.portal-theme-dopamine .employee-stat,
+body.portal-theme-dopamine .employee-panel,
+body.portal-theme-dopamine .survey-card,
+body.portal-theme-dopamine .survey-kpi,
+body.portal-theme-dopamine .report-download-card{
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+body.portal-theme-dopamine .card:hover,
+body.portal-theme-dopamine .employee-stat:hover,
+body.portal-theme-dopamine .employee-panel:hover,
+body.portal-theme-dopamine .survey-card:hover,
+body.portal-theme-dopamine .survey-kpi:hover,
+body.portal-theme-dopamine .report-download-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--dopa-shadow-hard-lg);
+}
+body.portal-theme-dopamine .btn,
+body.portal-theme-dopamine .block-btn{
+  border:var(--dopa-border);
+  border-radius:var(--dopa-radius-pill);
+  box-shadow:4px 4px 0 var(--dopa-text);
+  transition:transform .1s ease,box-shadow .1s ease,background-color .1s ease;
+}
+body.portal-theme-dopamine .btn-primary{
+  background:var(--dopa-orange);
+  border-color:var(--dopa-text);
+  color:#fff;
+}
+body.portal-theme-dopamine .btn-primary:hover{
+  background:#ff5216;
+  border-color:var(--dopa-text);
+}
+body.portal-theme-dopamine .btn:active,
+body.portal-theme-dopamine .block-btn:active{
+  transform:translate(3px,3px);
+  box-shadow:2px 2px 0 var(--dopa-text);
+}
+body.portal-theme-dopamine input,
+body.portal-theme-dopamine select,
+body.portal-theme-dopamine textarea{
+  border:2px solid var(--dopa-text);
+  border-radius:var(--dopa-radius-sm);
+  background:var(--dopa-surface);
+  color:var(--dopa-text);
+}
+body.portal-theme-dopamine input:focus,
+body.portal-theme-dopamine select:focus,
+body.portal-theme-dopamine textarea:focus{
+  border-color:var(--dopa-neon-pink);
+  box-shadow:0 0 0 4px rgba(255,0,127,.16);
+}
+body.portal-theme-dopamine .pill,
+body.portal-theme-dopamine .chip{
+  border:2px solid var(--dopa-text);
+  border-radius:var(--dopa-radius-pill);
+  background:var(--dopa-lavender);
+  color:var(--dopa-text);
+}
+body.portal-theme-dopamine .pill.lime,
+body.portal-theme-dopamine .chip:not(.neutral){
+  background:var(--dopa-yellow);
+}
+body.portal-theme-dopamine .table-scroll,
+body.portal-theme-dopamine table{
+  border-radius:var(--dopa-radius-sm);
+}
+body.portal-theme-dopamine th{
+  background:var(--dopa-lavender);
+  color:var(--dopa-text);
+}
+body.portal-theme-dopamine td,
+body.portal-theme-dopamine th{
+  border-color:rgba(43,45,66,.35);
+}
+body.portal-theme-dopamine .org-node,
+body.portal-theme-dopamine .org-ceo,
+body.portal-theme-dopamine .node{
+  border:2px solid var(--dopa-text);
+  border-radius:var(--dopa-radius-sm);
+  box-shadow:3px 3px 0 var(--dopa-text);
+}
+body.portal-theme-dopamine .org-ceo{
+  background:var(--dopa-lavender);
+  color:var(--dopa-text);
+}
+body.portal-theme-dopamine .org-dir{
+  background:var(--dopa-pink-pastel);
+}
+body.portal-theme-dopamine dialog{
+  border:var(--dopa-border);
+  border-radius:var(--dopa-radius-card);
+  box-shadow:var(--dopa-shadow-hard-lg);
+}
+body.portal-theme-dopamine .login-page{
+  background:radial-gradient(circle at 12% 18%,var(--dopa-pink-pastel) 0,transparent 34%),var(--dopa-bg);
+}
+body.portal-theme-dopamine .login-aside-mark{
+  border:var(--dopa-border);
+  border-radius:var(--dopa-radius-blob);
+  background:var(--dopa-yellow);
+  box-shadow:var(--dopa-shadow-hard);
+}
+body.portal-theme-dopamine .theme-picker select{
+  border-color:var(--dopa-pink-pastel);
+}

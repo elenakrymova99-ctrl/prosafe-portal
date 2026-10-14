@@ -1,5 +1,40 @@
 // ===== On Boarding в ProSafe — общий код прототипа кабинета HR =====
 const KEY = 'prosafe.proto.v1';
+const THEME_KEY = 'prosafe.theme.v1';
+const THEMES = [
+  {id:'prosafe',name:'Стандартная'},
+  {id:'dopamine',name:'Дофаминовый декор'}
+];
+function currentTheme(){
+  try{
+    const value = localStorage.getItem(THEME_KEY);
+    if(value === 'custom') return 'dopamine';
+    return THEMES.some(theme => theme.id === value) ? value : 'prosafe';
+  }catch{
+    return 'prosafe';
+  }
+}
+function applyTheme(theme){
+  if(!THEMES.some(item => item.id === theme)) return;
+  document.documentElement.dataset.theme = theme;
+  document.body?.classList.toggle('portal-theme-dopamine',theme === 'dopamine');
+  try{
+    localStorage.setItem(THEME_KEY,theme);
+  }catch{
+    toast('Не удалось сохранить тему на этом устройстве');
+  }
+}
+function themePicker(){
+  const selected = currentTheme();
+  return `<div class="theme-picker">
+    <label for="sidebar-theme">Тема оформления</label>
+    <select id="sidebar-theme" aria-label="Тема оформления" onchange="applyTheme(this.value)">
+      ${THEMES.map(theme => `<option value="${theme.id}" ${theme.id === selected ? 'selected' : ''}>${theme.name}</option>`).join('')}
+    </select>
+  </div>`;
+}
+document.documentElement.dataset.theme = currentTheme();
+document.body?.classList.toggle('portal-theme-dopamine',currentTheme() === 'dopamine');
 function seedData(){
   const employees = [
     {id:101, name:'Анна Михайлова', pos:'Менеджер по адаптации', dept:'HR', dir:'Офис', mgr:'Елена Соловьева', phone:'+7 (495) 111-22-33', email:'a.mikhaylova@prosafe.ru', contacts:true, adapt:true, start:'2026-09-12', status:'Активна', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Елена Соловьева','Наставник':'Игорь Кузнецов'}},
@@ -188,6 +223,7 @@ function renderAside(){
   $('aside').innerHTML = `<a class="brand" href="home.html">On Boarding в ProSafe<small>Кабинет HR</small></a>
     <nav>${SECTIONS.map(([id,l]) => `<a href="${id}.html" ${id===cur?'aria-current="page"':''}>${l}</a>`).join('')}
       ${selfProfile ? `<a href="#" data-my-card>Моя визитка</a>` : ''}</nav>
+    ${themePicker()}
     <div class="sidebar-footer">
       <div class="support-card">
         <div class="support-title">Нужна помощь?</div>
@@ -1669,6 +1705,7 @@ function renderEmployeeAside(employee, account){
   $('aside').innerHTML = `<a class="brand" href="employee.html">On Boarding в ProSafe<small>Кабинет сотрудника</small></a>
     <div class="employee-sidebar-user"><span class="employee-avatar">${esc((employee.name || 'С').slice(0,1))}</span><div><strong>${esc(employee.name)}</strong><small>${esc(employee.pos)}</small></div></div>
     <nav>${links.map(([id,label]) => `<a href="#${id}" data-employee-tab="${id}">${label}</a>`).join('')}</nav>
+    ${themePicker()}
     <div class="sidebar-footer">
       <div class="support-card">
         <div class="support-title">Нужна помощь?</div>
