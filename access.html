@@ -13,7 +13,7 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Доступы и настройки</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
     <div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="dash">Дашборд</button><button class="tab" role="tab" data-tab="users">Пользователи</button><button class="tab" role="tab" data-tab="rights">Права</button></div>
     <section data-panel="dash" hidden>
     <div class="grid">
@@ -24,16 +24,18 @@
     </div>
     </section>
     <section data-panel="users" hidden>
-<div class="actions"><button class="btn btn-primary" onclick="openUser()">Добавить пользователя</button></div>    <div id="users-table"></div>
+      <div class="actions"><button class="btn btn-primary" onclick="openUser()">Добавить пользователя</button></div>
+      <div class="note">HR назначает каждому доступу роль и связанный профиль. Пароли хранятся в этом демонстрационном браузерном прототипе; не используйте реальные пароли.</div>
+      <div id="users-table"></div>
     </section>
     <section data-panel="rights" hidden>
-    <div class="card" style="max-width:520px"><h3>Роли</h3><p class="hint">Выберите роли галочкой. Серверная проверка прав — этап 2.</p>
-      <label class="check"><input type="checkbox" checked> HR</label>
-      <label class="check"><input type="checkbox" checked> Сотрудник</label>
-      <label class="check"><input type="checkbox" checked> Руководитель</label>
-      <label class="check"><input type="checkbox"> Администратор</label>
-      <div class="actions" style="margin-top:16px"><button class="btn btn-primary" onclick="toast('Права сохранены')">Сохранить</button></div>
-    </div>
+      <div class="role-access-grid">
+        <article class="card"><h3>Сотрудник</h3><p>Главная, визитка, справочник людей, опросы, документы и шаблоны.</p></article>
+        <article class="card"><h3>Сотрудник с адаптацией</h3><p>Доступ сотрудника плюс личный план адаптации и отметка о выполнении задач.</p></article>
+        <article class="card"><h3>Сотрудник — руководитель адаптации</h3><p>Доступ сотрудника плюс просмотр и редактирование планов назначенных HR сотрудников.</p></article>
+        <article class="card"><h3>HR</h3><p>Полный кабинет управления порталом и настройка доступов пользователей.</p></article>
+      </div>
+      <div class="note">Назначение сотрудников руководителю адаптации настраивается в карточке доступа. GitHub Pages не обеспечивает серверную защиту этих ролей.</div>
     </section>
   </main>
 </div>

@@ -13,7 +13,7 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Люди ProSafe</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="home">Главная</button>
       <button class="tab" role="tab" data-tab="history">История компании</button>
@@ -23,11 +23,11 @@
     <section data-panel="home" hidden>
     <label for="people-q">Поиск сотрудников</label>
     <input id="people-q" oninput="renderPeopleSearch(this.value)" placeholder="ФИО, должность или отдел">
-    <div id="people-results" style="margin-top:12px"></div>
-    <div class="row3" style="margin-top:20px"><button class="block-btn" onclick="showDir('Офис')"><div class="lbl">Офис</div><div class="num" id="dir-cnt-Офис">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Склад')"><div class="lbl">Склад</div><div class="num" id="dir-cnt-Склад">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Производство')"><div class="lbl">Производство</div><div class="num" id="dir-cnt-Производство">0</div><div class="lbl">сотрудников</div></button></div>
-    <h2 style="margin-top:28px">Частые темы</h2>
+    <div id="people-results" class="people-results"></div>
+    <div class="row3 people-directions"><button class="block-btn" onclick="showDir('Офис')"><div class="lbl">Офис</div><div class="num" id="dir-cnt-Офис">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Склад')"><div class="lbl">Склад</div><div class="num" id="dir-cnt-Склад">0</div><div class="lbl">сотрудников</div></button><button class="block-btn" onclick="showDir('Производство')"><div class="lbl">Производство</div><div class="num" id="dir-cnt-Производство">0</div><div class="lbl">сотрудников</div></button></div>
+    <h2 class="people-topics-title">Частые темы</h2>
     <p class="hint">Не знаешь к кому обратиться? Выбери тему — подскажем, кто поможет.</p>
-    <div class="row3" style="margin-top:12px"><button class="block-btn" onclick="openTopic('Отпуск')"><b>Отпуск</b></button><button class="block-btn" onclick="openTopic('Пропуск и доступ')"><b>Пропуск и доступ</b></button><button class="block-btn" onclick="openTopic('Зарплата и табель')"><b>Зарплата и табель</b></button><button class="block-btn" onclick="openTopic('Оборудование и ТБ')"><b>Оборудование и ТБ</b></button><button class="block-btn" onclick="openTopic('IT и учётные записи')"><b>IT и учётные записи</b></button><button class="block-btn" onclick="openTopic('Командировки')"><b>Командировки</b></button></div>
+    <div class="row3 people-topics"><button class="block-btn" onclick="openTopic('Отпуск')"><b>Отпуск</b></button><button class="block-btn" onclick="openTopic('Пропуск и доступ')"><b>Пропуск и доступ</b></button><button class="block-btn" onclick="openTopic('Зарплата и табель')"><b>Зарплата и табель</b></button><button class="block-btn" onclick="openTopic('Оборудование и ТБ')"><b>Оборудование и ТБ</b></button><button class="block-btn" onclick="openTopic('IT и учётные записи')"><b>IT и учётные записи</b></button><button class="block-btn" onclick="openTopic('Командировки')"><b>Командировки</b></button></div>
     </section>
     <section data-panel="history" hidden>
     <div class="history-shell">

@@ -13,36 +13,24 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Документы и шаблоны</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
     <div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="search">Поиск</button><button class="tab" role="tab" data-tab="docs">Документы</button><button class="tab" role="tab" data-tab="templates">Шаблоны</button><button class="tab" role="tab" data-tab="corp">Корпоративные документы</button></div>
     <section data-panel="search" hidden>
     <label for="doc-q">Поиск по документам и шаблонам</label>
     <input id="doc-q" oninput="renderDocSearch(this.value)" placeholder="Название">
-    <div id="doc-results" style="margin-top:16px"></div>
+    <div id="doc-results" class="docs-results"></div>
     </section>
     <section data-panel="docs" hidden>
     <div class="actions"><button class="btn btn-primary" onclick="openDoc('docs')">Добавить документ</button></div>
-    <div style="margin-top:18px">
-      <h3>Популярные документы</h3>
-      <div id="docs-preview"></div>
-    </div>
-    <div id="docs-table" style="margin-top:18px"></div>
+    <div id="docs-table" class="docs-table"></div>
     </section>
     <section data-panel="templates" hidden>
     <div class="actions"><button class="btn btn-primary" onclick="openDoc('templates')">Добавить шаблон</button></div>
-    <div style="margin-top:18px">
-      <h3>Популярные шаблоны</h3>
-      <div id="templates-preview"></div>
-    </div>
-    <div id="templates-table" style="margin-top:18px"></div>
+    <div id="templates-table" class="docs-table"></div>
     </section>
     <section data-panel="corp" hidden>
     <div class="actions"><button class="btn btn-primary" onclick="openDoc('corpDocs')">Добавить материал</button></div>
-    <div style="margin-top:18px">
-      <h3>Популярные материалы</h3>
-      <div id="corp-preview"></div>
-    </div>
-    <div id="corp-table" style="margin-top:18px"></div>
+    <div id="corp-table" class="docs-table"></div>
     </section>
   </main>
 </div>

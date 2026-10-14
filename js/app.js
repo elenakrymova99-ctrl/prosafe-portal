@@ -8,8 +8,8 @@ function seedData(){
     {id:104, name:'Елена Соловьева', pos:'HRBP', dept:'HR', dir:'Офис', mgr:'Генеральный директор', phone:'+7 (495) 444-88-99', email:'e.soloveva@prosafe.ru', contacts:true, adapt:false, start:'', status:'Без адаптации', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Елена Соловьева','Наставник':'Анна Михайлова'}}
   ];
   const positions = [
-    {name:'Менеджер по адаптации', dept:'HR', dir:'Офис', tpl:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', respId:104, resp:'Елена Соловьева'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', respId:104, resp:'Елена Соловьева'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', respId:104, resp:'Елена Соловьева'}], status:'Активна', updated:'2026-09-10'},
-    {name:'Старший инженер', dept:'Производство', dir:'Производство', tpl:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', respId:103, resp:'Ольга Петрова'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', respId:103, resp:'Ольга Петрова'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', respId:103, resp:'Ольга Петрова'}], status:'Активна', updated:'2026-09-11'},
+    {name:'Менеджер по адаптации', dept:'HR', dir:'Офис', tpl:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', place:'Переговорная 2', respId:104, resp:'Елена Соловьева'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', place:'Кабинет HR', respId:104, resp:'Елена Соловьева'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', place:'Переговорная 1', respId:104, resp:'Елена Соловьева'}], status:'Активна', updated:'2026-09-10'},
+    {name:'Старший инженер', dept:'Производство', dir:'Производство', tpl:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', place:'Производственный участок', respId:103, resp:'Ольга Петрова'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', place:'Кабинет охраны труда', respId:103, resp:'Ольга Петрова'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', place:'Производственный участок', respId:103, resp:'Ольга Петрова'}], status:'Активна', updated:'2026-09-11'},
     {name:'HRBP', dept:'HR', dir:'Офис', tpl:[], status:'Активна', updated:'2026-09-09'},
     {name:'Руководитель участка', dept:'Производство', dir:'Производство', tpl:[], status:'Активна', updated:'2026-09-09'}
   ];
@@ -43,22 +43,88 @@ function seedData(){
     {text:'Сделать единый шаблон обратной связи по задачам', date:'2026-09-20'}
   ];
   const tasks = {
-    101:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', respId:104, resp:'Елена Соловьева', status:'Проверена руководителем'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', respId:104, resp:'Елена Соловьева', status:'Выполнена'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', respId:104, resp:'Елена Соловьева', status:'Ожидает проверки'}],
-    102:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', respId:103, resp:'Ольга Петрова', status:'Выполнена'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', respId:103, resp:'Ольга Петрова', status:'Ожидает проверки'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', respId:103, resp:'Ольга Петрова', status:'Назначена'}]
+    101:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', place:'Переговорная 2', respId:104, resp:'Елена Соловьева', status:'Проверена руководителем'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', place:'Кабинет HR', respId:104, resp:'Елена Соловьева', status:'Выполнена'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', place:'Переговорная 1', respId:104, resp:'Елена Соловьева', status:'Ожидает проверки'}],
+    102:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Выполнена'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', place:'Кабинет охраны труда', respId:103, resp:'Ольга Петрова', status:'Ожидает проверки'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Назначена'}]
   };
   const users = [
-    {name:'Елена Соловьева', login:'e.soloveva', role:'HR', status:'Активна'},
-    {name:'Анна Михайлова', login:'a.mikhaylova', role:'Руководитель', status:'Активна'},
-    {name:'Игорь Кузнецов', login:'i.kuznetsov', role:'Сотрудник', status:'Активна'},
-    {name:'Ольга Петрова', login:'o.petrova', role:'Руководитель', status:'Активна'}
+    {name:'Елена Соловьева', login:'e.soloveva', password:'ProSafe2026!', role:'HR', status:'Активна'},
+    {name:'Анна Михайлова', login:'a.mikhaylova', password:'ProSafe2026!', role:'Сотрудник с адаптацией', employeeId:101, status:'Активна'},
+    {name:'Игорь Кузнецов', login:'i.kuznetsov', password:'ProSafe2026!', role:'Сотрудник с адаптацией', employeeId:102, status:'Активна'},
+    {name:'Ольга Петрова', login:'o.petrova', password:'ProSafe2026!', role:'Сотрудник — руководитель адаптации', employeeId:103, managedEmployeeIds:[102], status:'Активна'}
   ];
-  return {employees,positions,materials:[],faq,history:'Компания ProSafe работает по модели «первый месяц — приоритет». Для новых сотрудников важно быстро понять регламенты, роли и культуру команды.',docs,templates,corpDocs,surveys,evals,ideas,tasks,users,topicHelpers:{'Отпуск':[104,103],'Пропуск и доступ':[103,104],'IT и учётные записи':[104,101]}};
+  return {employees,positions,materials:[],faq,history:'Компания ProSafe работает по модели «первый месяц — приоритет». Для новых сотрудников важно быстро понять регламенты, роли и культуру команды.',docs,templates,corpDocs,surveys,surveyResponses:[],feedbackMessages:[],evals,ideas,tasks,users,accessRoleVersion:1,topicHelpers:{'Отпуск':[104,103],'Пропуск и доступ':[103,104],'IT и учётные записи':[103,104]}};
 }
 const DEFAULT = seedData();
 let DB = load();
-function load(){ try{ const saved = JSON.parse(localStorage.getItem(KEY)||'{}'); return Object.assign({}, DEFAULT, saved); }catch(e){ return Object.assign({}, DEFAULT); } }
+function load(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(KEY)||'{}');
+    const oldRoleModel = !saved.accessRoleVersion;
+    const data = Object.assign({}, DEFAULT, saved);
+    let migrated = false;
+    data.surveyResponses = data.surveyResponses || [];
+    data.feedbackMessages = data.feedbackMessages || [];
+    data.ideas = data.ideas || [];
+    const legacyRoles = {'Руководитель':'Сотрудник — руководитель адаптации'};
+    (data.users || []).forEach(user => {
+      if(oldRoleModel && legacyRoles[user.role]){
+        user.role = legacyRoles[user.role];
+        migrated = true;
+      }
+      if(!user.employeeId){
+        const linked = data.employees.find(item => item.name === user.name);
+        if(linked){ user.employeeId = linked.id; migrated = true; }
+      }
+      const linkedEmployee = data.employees.find(item => Number(item.id) === Number(user.employeeId));
+      if(oldRoleModel && user.role === 'Сотрудник' && linkedEmployee?.adapt){
+        user.role = 'Сотрудник с адаптацией';
+        migrated = true;
+      }
+      if(!user.password){
+        user.password = ({'e.soloveva':'ProSafe2026!','a.mikhaylova':'ProSafe2026!','i.kuznetsov':'ProSafe2026!','o.petrova':'ProSafe2026!'})[user.login] || '';
+        migrated = true;
+      }
+      if(user.role === 'Сотрудник — руководитель адаптации' && !Array.isArray(user.managedEmployeeIds)){
+        user.managedEmployeeIds = data.employees.filter(item => item.name !== user.name && (item.mgr === user.name || item.resp?.['Руководитель адаптации'] === user.name)).map(item => item.id);
+        migrated = true;
+      }
+    });
+    if(oldRoleModel){ data.accessRoleVersion = 1; migrated = true; }
+    (data.positions || []).forEach(position => {
+      const baseline = DEFAULT.positions.find(item => item.name === position.name);
+      (position.tpl || []).forEach(task => {
+        if(!task.place){
+          task.place = baseline?.tpl.find(item => item.title === task.title)?.place || 'Уточните у руководителя';
+          migrated = true;
+        }
+      });
+    });
+    Object.entries(data.tasks || {}).forEach(([id, tasks]) => {
+      const employee = data.employees.find(item => String(item.id) === id);
+      const baseline = DEFAULT.positions.find(item => item.name === employee?.pos);
+      tasks.forEach(task => {
+        if(task.resp){
+          const responsible = data.employees.find(item => item.name.toLowerCase() === String(task.resp).trim().toLowerCase());
+          if(responsible && Number(task.respId) !== Number(responsible.id)){
+            task.respId = responsible.id;
+            migrated = true;
+          }
+        }
+        if(!task.place){
+          task.place = baseline?.tpl.find(item => item.title === task.title)?.place || 'Уточните у руководителя';
+          migrated = true;
+        }
+      });
+    });
+    if(migrated) localStorage.setItem(KEY, JSON.stringify(data));
+    return data;
+  }catch(e){ return Object.assign({}, DEFAULT); }
+}
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
 
+const EMPLOYEE_ROLES = ['Сотрудник','Сотрудник с адаптацией','Сотрудник — руководитель адаптации'];
+const isEmployeeRole = role => EMPLOYEE_ROLES.includes(role);
+const isAdaptationManager = role => role === 'Сотрудник — руководитель адаптации';
 const ROLES = ['HR','Руководитель адаптации','Наставник'];
 const DIRS = ['Офис','Склад','Производство'];
 const SECTIONS = [['home','Главная'],['people','Люди ProSafe'],['staff','Сотрудники и должности'],['docs','Документы и шаблоны'],['reports','Отчёты и аналитика'],['adapt','Управление адаптацией'],['surveys','Опросы и результаты'],['access','Доступы и настройки']];
@@ -70,6 +136,14 @@ const emp = id => DB.employees.find(x => x.id == id);
 const pName = (id, fallback) => { const e = emp(id); return e ? nameLink(e) : esc(fallback || '—'); };
 function addDays(iso, n){ const d = new Date(iso); d.setDate(d.getDate() + n); return d; }
 function taskDateFor(start, day){ if(!start) return '—'; return addDays(start, (Number(day)||1) - 1).toLocaleDateString('ru-RU'); }
+function goBack(){
+  if(history.length > 1) history.back();
+  else goHome();
+}
+function goHome(){
+  const user = currentUser();
+  location.href = user && isEmployeeRole(user.role) ? 'employee.html?tab=overview' : 'home.html';
+}
 function dayOf(e){ if(!e.start) return 0; const d = Math.floor((Date.now() - new Date(e.start)) / 86400000) + 1; return Math.max(0, Math.min(60, d)); }
 // Прогресс: задачи 60%, документы 20%, опросы 10%, время 10% (документы и опросы пока не назначаются — 0)
 function progress(e){
@@ -79,6 +153,7 @@ function progress(e){
   return Math.round((0.6*tasksPart + 0.1*(dayOf(e)/60)) * 100);
 }
 function today(){ return new Date().toLocaleDateString('ru-RU'); }
+const surveyResponseCount = () => (DB.surveyResponses || []).length;
 
 function toast(msg){
   const t = document.createElement('div'); t.textContent = msg; t.setAttribute('role','status');
@@ -87,7 +162,7 @@ function toast(msg){
 }
 function tbl(head, rows, empty){
   if(!rows.length) return `<div class="card empty">${esc(empty || 'Пока пусто')}</div>`;
-  return `<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  return `<div class="table-scroll"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function pill(s){ const ok = ['Активна','Выполнена','Проверена руководителем','Отправлена']; return `<span class="pill ${ok.includes(s)?'lime':''}">${esc(s)}</span>`; }
 function progressCell(p){ return `<div style="display:flex;gap:10px;align-items:center"><div class="bar"><span style="width:${p}%"></span></div><span>${p}%</span></div>`; }
@@ -108,15 +183,23 @@ document.addEventListener('click', ev => {
 // ---------- Оболочка: меню и диалоги ----------
 function renderAside(){
   const cur = document.body.dataset.page;
-  $('aside').innerHTML = `<a class="brand" href="welcome.html">On Boarding в ProSafe<small>Кабинет HR</small></a>
-    <nav>${SECTIONS.map(([id,l]) => `<a href="${id}.html" ${id===cur?'aria-current="page"':''}>${l}</a>`).join('')}</nav>
+  const user = currentUser();
+  const selfProfile = user && emp(user.employeeId);
+  $('aside').innerHTML = `<a class="brand" href="home.html">On Boarding в ProSafe<small>Кабинет HR</small></a>
+    <nav>${SECTIONS.map(([id,l]) => `<a href="${id}.html" ${id===cur?'aria-current="page"':''}>${l}</a>`).join('')}
+      ${selfProfile ? `<a href="#" data-my-card>Моя визитка</a>` : ''}</nav>
     <div class="sidebar-footer">
       <div class="support-card">
         <div class="support-title">Нужна помощь?</div>
         <div class="support-copy">Поддержка разработчиков на связи в рабочие часы.</div>
         <button type="button" class="btn btn-primary support-btn" onclick="window.location.href='mailto:support@prosafe.local?subject=Поддержка%20ProSafe'">Написать в поддержку</button>
       </div>
+      <button type="button" class="linkbtn sidebar-logout" onclick="logout()">Выйти из кабинета</button>
     </div>`;
+  $('aside').querySelector('[data-my-card]')?.addEventListener('click', event => {
+    event.preventDefault();
+    showCard(selfProfile.id);
+  });
 }
 function injectDialogs(){
   document.body.insertAdjacentHTML('beforeend', '<dialog id="dlg"><form method="dialog" class="dlg" id="dlgForm"></form></dialog><dialog id="dlg2"><form method="dialog" class="dlg" id="dlg2Form"></form></dialog>');
@@ -135,12 +218,57 @@ function bindTabs(){
 // Карточка сотрудника (поверх любой формы)
 function showCard(id){
   const e = emp(id); if(!e) return;
+  const account = currentUser();
+  const canEdit = account && account.role === 'HR';
   $('dlg2Form').innerHTML = `<h2>${esc(e.name)}</h2><div class="hint">${esc(e.pos)} · ${esc(e.dept)} · ${esc(e.dir)}</div>
     <h3 style="margin-top:16px">Контакты</h3><p>Руководитель: ${esc(e.mgr)}</p>
     ${e.contacts ? `<p>Телефон: ${esc(e.phone)}<br>Почта: ${esc(e.email)}</p>` : '<p class="hint">Контакты скрыты.</p>'}
     ${e.adapt ? `<h3 style="margin-top:16px">Адаптация</h3><p>День ${dayOf(e)} из 60 · начало: ${esc(e.start||'—')}</p>` : ''}
-    <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="$('dlg2').close()">Закрыть</button></div>`;
+    <div class="actions" style="margin-top:20px">${canEdit ? `<button type="button" class="btn btn-primary" onclick="openEmployeeCardEditor(${e.id})">Редактировать карточку</button>` : ''}<button type="button" class="btn" onclick="$('dlg2').close()">Закрыть</button></div>`;
   $('dlg2').showModal();
+}
+function openEmployeeCardEditor(id){
+  const account = currentUser();
+  const employee = emp(id);
+  if(!account || account.role !== 'HR' || !employee){ toast('Нет доступа к редактированию карточки'); return; }
+  $('dlgForm').innerHTML = `<h2>Редактировать личную карточку</h2>
+    <label for="card-name">ФИО *</label><input id="card-name" value="${esc(employee.name)}">
+    <label for="card-pos">Должность</label><input id="card-pos" value="${esc(employee.pos)}">
+    <div class="cols" style="gap:12px"><div><label for="card-dept">Отдел</label><input id="card-dept" value="${esc(employee.dept)}"></div><div><label for="card-dir">Направление</label><select id="card-dir">${DIRS.map(dir => `<option ${dir === employee.dir ? 'selected' : ''}>${esc(dir)}</option>`).join('')}</select></div></div>
+    <label for="card-manager">Руководитель</label><input id="card-manager" value="${esc(employee.mgr)}">
+    <div class="cols" style="gap:12px"><div><label for="card-phone">Телефон</label><input id="card-phone" value="${esc(employee.phone)}"></div><div><label for="card-email">Рабочая почта</label><input id="card-email" type="email" value="${esc(employee.email)}"></div></div>
+    <label class="check"><input id="card-contacts" type="checkbox" ${employee.contacts ? 'checked' : ''}> Показывать контакты сотрудникам</label>
+    <div class="actions" style="margin-top:20px"><button class="btn btn-primary" type="button" onclick="saveEmployeeCard(${employee.id})">Сохранить</button><button class="btn" type="button" onclick="$('dlg').close()">Отмена</button></div>`;
+  $('dlg2').close();
+  $('dlg').showModal();
+}
+function saveEmployeeCard(id){
+  const account = currentUser();
+  const employee = emp(id);
+  const name = $('card-name').value.trim();
+  const email = $('card-email').value.trim();
+  if(!account || account.role !== 'HR' || !employee){ toast('Нет доступа к редактированию карточки'); return; }
+  if(!name){ alert('Укажите ФИО сотрудника.'); return; }
+  if(email && !$('card-email').validity.valid){ alert('Проверьте адрес рабочей почты.'); return; }
+  employee.name = name;
+  employee.pos = $('card-pos').value.trim() || '—';
+  employee.dept = $('card-dept').value.trim() || '—';
+  employee.dir = $('card-dir').value;
+  employee.mgr = $('card-manager').value.trim() || '—';
+  employee.phone = $('card-phone').value.trim() || '—';
+  employee.email = email || '—';
+  employee.contacts = $('card-contacts').checked;
+  DB.users.forEach(user => {
+    if(Number(user.employeeId) === Number(employee.id)) user.name = employee.name;
+  });
+  Object.values(DB.tasks).flat().forEach(task => {
+    if(task.respId && emp(task.respId)?.id === employee.id) task.resp = employee.name;
+  });
+  save();
+  $('dlg').close();
+  if(document.body.dataset.page === 'employee') renderEmployeePortal();
+  else if(window.PAGE_RENDER) window.PAGE_RENDER();
+  toast('Карточка сотрудника сохранена');
 }
 
 // Простая форма создания (материалы, FAQ, документы, опросы, пользователи)
@@ -338,7 +466,7 @@ function dropList(){ return DB.evals.filter(x => x.cur !== undefined && x.prev !
 function renderHome(){
   const adapt = DB.employees.filter(e => e.adapt);
   const drops = dropList().length;
-  set('k-adapt', adapt.length); set('k-waiting', waitingList().length); set('k-answers', DB.surveys.length);
+  set('k-adapt', adapt.length); set('k-waiting', waitingList().length); set('k-answers', surveyResponseCount());
   set('k-drops', drops); set('k-ideas', DB.ideas.length);
   const dropCard = $('k-drops');
   if(dropCard){
@@ -347,6 +475,20 @@ function renderHome(){
   }
   set('home-adapt', tbl(['ФИО','Должность','День','Прогресс','Статус'],
     adapt.map(e => [nameLink(e), esc(e.pos), dayOf(e), progressCell(progress(e)), pill(e.status)]), 'Сотрудников на адаптации пока нет'));
+  set('home-today-label', today());
+  const todaysTasks = adapt.flatMap(employee => (DB.tasks[employee.id] || [])
+    .map((task,index) => ({task,index}))
+    .filter(({task}) => taskDateFor(employee.start,task.day) === today())
+    .map(({task,index}) => ({employee,task,index}))
+    .sort((a,b) => String(a.task.from || '').localeCompare(String(b.task.from || ''))));
+  set('home-schedule-list', todaysTasks.length ? `
+    <div class="home-schedule-list">${todaysTasks.map(({employee,task,index}) => `
+      <article class="home-schedule-item">
+        <div class="home-schedule-time">${esc(task.from || 'Время не указано')}<span>${esc(task.to || '—')}</span></div>
+        <div class="home-schedule-main"><button type="button" class="linkbtn" onclick="openEmployeeTaskEditor(${employee.id},${index})">${esc(task.title)}</button><span>${nameLink(employee)} · ${esc(employee.pos)}</span><small>${esc(task.place || 'Место не указано')} · Ответственный: ${esc(task.resp || '—')}</small></div>
+        ${pill(task.status)}
+      </article>
+    `).join('')}</div>` : '<div class="home-schedule-empty"><strong>Сегодня задач по плану нет</strong><span>Когда сотрудникам на адаптации назначат задачи на сегодня, они появятся здесь.</span></div>');
 }
 
 const TOPICS = ['Отпуск','Пропуск и доступ','Зарплата и табель','Оборудование и ТБ','IT и учётные записи','Командировки'];
@@ -429,6 +571,11 @@ function addTopicHelper(topic){
 // ---------- Оргсхема ----------
 function renderOrg(){
   const box = $('org-chart'); if(!box) return;
+  box.innerHTML = orgChartMarkup();
+  requestAnimationFrame(() => drawOrg(box));
+  bindOrgTab();
+}
+function orgChartMarkup(){
   const dirBranches = DIRS.map(d => {
     const list = DB.employees.filter(e => e.dir === d);
     const depts = [...new Set(list.map(e => e.dept || '—'))];
@@ -446,12 +593,10 @@ function renderOrg(){
     return `<div class="org-branch"><div class="org-node org-dir" data-node="${esc(dirId)}" data-parent="ceo"><b>${esc(d)}</b></div>
       <div class="org-row">${deptHtml || '<div class="org-empty">Сотрудников пока нет</div>'}</div></div>`;
   }).join('');
-  box.innerHTML = `<svg></svg><div class="org-branch"><div class="org-ceo" data-node="ceo">Генеральный директор<br><small>ProSafe</small></div><div class="org-row" style="margin-top:14px">${dirBranches}</div></div>`;
-  requestAnimationFrame(drawOrg);
-  bindOrgTab();
+  return `<svg></svg><div class="org-branch"><div class="org-ceo" data-node="ceo">Генеральный директор<br><small>ProSafe</small></div><div class="org-row" style="margin-top:14px">${dirBranches}</div></div>`;
 }
-function drawOrg(){
-  const box = $('org-chart'); if(!box) return;
+function drawOrg(target='org-chart'){
+  const box = typeof target === 'string' ? $(target) : target; if(!box) return;
   const svg = box.querySelector('svg'); if(!svg) return;
   const r0 = box.getBoundingClientRect(); if(!r0.width) return;   // вкладка скрыта
   svg.setAttribute('width', box.scrollWidth); svg.setAttribute('height', box.scrollHeight);
@@ -488,8 +633,8 @@ function bindOrgTab(){
   box.addEventListener('mouseover', ev => { const n = ev.target.closest('[data-node]'); if(n) highlightChain(n); });
   box.addEventListener('mouseleave', clearHl);
   const tab = document.querySelector('[data-tab="org"]');
-  if(tab) tab.addEventListener('click', () => setTimeout(drawOrg, 0));
-  window.addEventListener('resize', drawOrg);
+  if(tab) tab.addEventListener('click', () => setTimeout(() => drawOrg(), 0));
+  window.addEventListener('resize', () => drawOrg());
 }
 
 function openMaterial(){ simpleDialog('Новый материал', [{k:'title',l:'Название',req:true},{k:'type',l:'Тип',opts:['Текст','PDF','Файл']}], v => DB.materials.push(v)); }
@@ -520,27 +665,10 @@ function renderStaffSearch(q){
 }
 
 function renderDocs(){
-  const snapshotDocs = [...DB.docs].slice(0, 3);
-  const snapshotTemplates = [...DB.templates].slice(0, 3);
-  const snapshotCorp = [...DB.corpDocs].slice(0, 3);
-
   set('docs-table', tbl(['Название','Категория','Доступно','Версия','Обновлён'], DB.docs.map(d => [esc(d.title), esc(d.cat), esc(d.aud), esc(d.ver), esc(d.updated)]), 'Документов пока нет'));
   set('templates-table', tbl(['Название','Должность','Версия','Обновлён'], DB.templates.map(d => [esc(d.title), esc(d.cat), esc(d.ver), esc(d.updated)]), 'Шаблонов пока нет'));
   set('corp-table', tbl(['Название','Категория','Доступно','Версия','Обновлён'], DB.corpDocs.map(d => [esc(d.title), esc(d.cat), esc(d.aud), esc(d.ver), esc(d.updated)]), 'Материалов пока нет'));
-
-  const makeCards = (items, typeLabel) => items.length ? items.map(it => `
-    <div class="card" style="margin-bottom:12px">
-      <h3>${esc(it.title || it.name || 'Документ')}</h3>
-      <p class="hint">${esc(it.cat || it.category || typeLabel)} · ${esc(it.ver || 'v1')} · ${esc(it.updated || today())}</p>
-      <div class="actions" style="margin-top:12px">
-        <button class="btn btn-primary" onclick="downloadDoc('${esc(it.title || it.name || '')}', '${esc(typeLabel)}')">Скачать</button>
-      </div>
-    </div>
-  `).join('') : `<div class="card empty">${esc(typeLabel)} пока нет</div>`;
-
-  set('docs-preview', makeCards(snapshotDocs, 'Документ'));
-  set('templates-preview', makeCards(snapshotTemplates, 'Шаблон'));
-  set('corp-preview', makeCards(snapshotCorp, 'Корпоративный документ'));
+  renderDocSearch(($('doc-q') || {}).value || '');
 }
 function downloadDoc(title, type){
   const safeTitle = String(title || 'document').replace(/[\\/<>:"|?*]+/g, '').trim() || 'document';
@@ -605,7 +733,8 @@ function renderDocSearch(q){
     </div>
   ` : '';
 
-  set('doc-results', `${preview}${tbl(['Название','Категория','Версия'], all.map(d => [esc(d.title), esc(d.cat), esc(d.ver)]), 'Ничего не найдено')}`);
+  const results = s ? tbl(['Название','Категория','Версия'], all.map(d => [esc(d.title), esc(d.cat), esc(d.ver)]), 'Ничего не найдено') : '';
+  set('doc-results', `${preview}${results}`);
 }
 function openDoc(kind){
   const aud = ['Все'].concat(DIRS);
@@ -619,7 +748,7 @@ function renderReports(){
   const cards = [
     { label: 'Сотрудники на адаптации', value: adapt.length, href: 'reports.html?tab=adapt-count' },
     { label: 'Ждут проверки', value: waitingList().length, href: 'reports.html?tab=waiting' },
-    { label: 'Новые ответы на опросы', value: DB.surveys.length, href: 'reports.html?tab=answers' },
+    { label: 'Новые ответы на опросы', value: surveyResponseCount(), href: 'reports.html?tab=answers' },
     { label: 'Снижение оценок', value: dropList().length, href: 'reports.html?tab=drops' },
     { label: 'Новые идеи в банке', value: DB.ideas.length, href: 'surveys.html?tab=ideas' }
   ];
@@ -635,7 +764,7 @@ function renderReports(){
   const alerts = [
     { title: 'На адаптации', text: adapt.length > 0 ? `${adapt.length} сотрудника требуют текущей проверки и поддержки.` : 'Нет активных сотрудников на адаптации.' },
     { title: 'Ждут проверки', text: waitingList().length > 0 ? `${waitingList().length} задач ждут финального подтверждения.` : 'Все задачи проверены.' },
-    { title: 'Опросы', text: DB.surveys.length > 0 ? `Есть ${DB.surveys.length} активных опроса.` : 'Активных опросов нет.' },
+    { title: 'Опросы', text: DB.surveys.some(survey => survey.status === 'Активна') ? `Активных опросов: ${DB.surveys.filter(survey => survey.status === 'Активна').length}.` : 'Активных опросов нет.' },
     { title: 'Новые идеи', text: DB.ideas.length > 0 ? `${DB.ideas.length} новых идеи в банке изменений.` : 'Идей не найдено.' }
   ];
   set('rep-alerts', alerts.map(item => `
@@ -671,7 +800,8 @@ function downloadReport(fileName, title){
     'Сводка:',
     `- Сотрудники на адаптации: ${adapt.length}`,
     `- Ждут проверки: ${waitingList().length}`,
-    `- Новые ответы на опросы: ${DB.surveys.length}`,
+    `- Ответы на опросы: ${surveyResponseCount()}`,
+    ...(DB.surveyResponses || []).map(response => `  - ${response.title} — ${emp(response.employeeId)?.name || 'Сотрудник'}: ${response.answer}`),
     `- Снижение оценок: ${dropList().length}`,
     `- Новые идеи: ${DB.ideas.length}`,
     '',
@@ -727,7 +857,7 @@ function renderPositionPlan(){
   el.innerHTML = tasks.length ? tasks.map((t, idx) => `
     <div class="plan-template-item">
       <div class="head">
-        <strong>${esc(t.title)}</strong>
+        <button type="button" class="linkbtn" onclick="openPlanTaskEditor(${idx})">${esc(t.title)}</button>
         <div class="actions" style="margin:0">
           <button type="button" class="btn" onclick="openPlanTaskEditor(${idx})">Изменить</button>
           <button type="button" class="btn btn-ghost" onclick="removePlanTask(${idx})">Удалить</button>
@@ -787,16 +917,51 @@ function removePlanTask(index){
 }
 function renderPlanTable(empId){
   const e = emp(empId); const ts = DB.tasks[empId] || [];
-  set('plan-table', tbl(['День','Дата','Время','Место','Задача','Ответственный','Статус'],
-    ts.map(t => [t.day, taskDateFor(e && e.start, t.day), `${esc(t.from||'—')} – ${esc(t.to||'—')}`, esc(t.place || '—'), esc(t.title), t.respId ? pName(t.respId, t.resp) : esc(t.resp||'—'), pill(t.status)]),
+  set('plan-table', tbl(['День','Дата','Время','Место','Задача','Ответственный','Статус','Действие'],
+    ts.map((t,index) => [t.day, taskDateFor(e && e.start, t.day), `${esc(t.from||'—')} – ${esc(t.to||'—')}`, esc(t.place || '—'), `<button type="button" class="linkbtn" onclick="openEmployeeTaskEditor(${Number(empId)},${index})">${esc(t.title)}</button>`, t.respId ? pName(t.respId, t.resp) : esc(t.resp||'—'), pill(t.status), `<button type="button" class="btn" onclick="openEmployeeTaskEditor(${Number(empId)},${index})">Изменить</button>`]),
     'В плане пока нет задач'));
+}
+function openEmployeeTaskEditor(employeeId,index){
+  const account = currentUser();
+  const employee = emp(employeeId);
+  const task = DB.tasks[employeeId]?.[index];
+  if(!account || account.role !== 'HR' || !employee || !task){ toast('Нет доступа к изменению задачи'); return; }
+  $('dlgForm').innerHTML = `<h2>Изменить задачу плана</h2>
+    <label for="hr-task-title">Название задачи *</label><input id="hr-task-title" value="${esc(task.title)}">
+    <div class="cols" style="gap:12px"><div><label for="hr-task-day">День адаптации</label><input id="hr-task-day" type="number" min="1" max="60" value="${esc(task.day || 1)}"></div><div><label for="hr-task-place">Место</label><input id="hr-task-place" value="${esc(task.place || '')}"></div></div>
+    <div class="cols" style="gap:12px"><div><label for="hr-task-from">Время с</label><input id="hr-task-from" type="time" value="${esc(task.from || '')}"></div><div><label for="hr-task-to">Время до</label><input id="hr-task-to" type="time" value="${esc(task.to || '')}"></div></div>
+    <label for="hr-task-resp">Ответственный</label><select id="hr-task-resp"><option value="">Не назначен</option>${DB.employees.map(person => `<option value="${person.id}" ${Number(task.respId || DB.employees.find(item => item.name.toLowerCase() === String(task.resp || '').trim().toLowerCase())?.id) === person.id ? 'selected' : ''}>${esc(person.name)} · ${esc(person.pos)}</option>`).join('')}</select>
+    <label for="hr-task-status">Статус</label><select id="hr-task-status">${['Назначена','В работе','Выполнена','Ожидает проверки','Проверена руководителем'].map(status => `<option ${status === task.status ? 'selected' : ''}>${esc(status)}</option>`).join('')}</select>
+    <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="saveEmployeeTask(${employeeId},${index})">Сохранить</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
+  $('dlg').showModal();
+}
+function saveEmployeeTask(employeeId,index){
+  const account = currentUser();
+  const employee = emp(employeeId);
+  const task = DB.tasks[employeeId]?.[index];
+  const title = $('hr-task-title').value.trim();
+  if(!account || account.role !== 'HR' || !employee || !task){ toast('Нет доступа к изменению задачи'); return; }
+  if(!title){ alert('Укажите название задачи.'); return; }
+  const respId = $('hr-task-resp').value ? Number($('hr-task-resp').value) : null;
+  task.title = title;
+  task.day = Math.max(1,Math.min(60,Number($('hr-task-day').value) || 1));
+  task.place = $('hr-task-place').value.trim() || '—';
+  task.from = $('hr-task-from').value;
+  task.to = $('hr-task-to').value;
+  task.respId = respId;
+  task.resp = respId ? emp(respId)?.name || '—' : '—';
+  task.status = $('hr-task-status').value;
+  save();
+  $('dlg').close();
+  renderAdapt();
+  toast('Задача плана обновлена');
 }
 
 function renderSurveys(){
   const adapt = DB.employees.filter(e => e.adapt);
   const cards = [
     { label: 'Новые результаты оценки адаптации', value: DB.evals.length, tone: 'olive' },
-    { label: 'Новые ответы по опросам', value: DB.surveys.length, tone: 'terracotta' },
+    { label: 'Новые ответы по опросам', value: surveyResponseCount(), tone: 'terracotta' },
     { label: 'Новых идей в банке', value: DB.ideas.length, tone: 'sand' }
   ];
 
@@ -836,10 +1001,10 @@ function renderSurveys(){
         <div class="survey-card">
           <div class="section-head">
             <h3>Активные опросы</h3>
-            <span class="chip neutral">${DB.surveys.length}</span>
+            <span class="chip neutral">${DB.surveys.filter(survey => survey.status === 'Активна').length}</span>
           </div>
           <div class="survey-list">
-            ${DB.surveys.length ? DB.surveys.map(s => `
+            ${DB.surveys.some(survey => survey.status === 'Активна') ? DB.surveys.filter(survey => survey.status === 'Активна').map(s => `
               <div class="survey-item">
                 <div class="survey-item-head">
                   <strong>${esc(s.title)}</strong>
@@ -901,15 +1066,15 @@ function renderSurveys(){
     <div class="survey-shell compact-shell">
       <div class="section-head"><h2>Результаты опросов</h2></div>
       <div class="survey-list large-list">
-        ${DB.surveys.length ? DB.surveys.map(s => `
+        ${(DB.surveyResponses || []).length ? DB.surveyResponses.map(response => `
           <div class="survey-item result-row">
             <div>
-              <strong>${esc(s.title)}</strong>
-              <div class="survey-item-meta">Ответили: ${esc(s.sent)} · Доступ: только HR</div>
+              <strong>${esc(response.title)}</strong>
+              <div class="survey-item-meta">${pName(response.employeeId)} · ${esc(response.date)}</div>
+              <p>${esc(response.answer)}</p>
             </div>
-            <div class="survey-item-status"><span class="pill lime">Готово</span></div>
           </div>
-        `).join('') : '<div class="empty-soft">Опросов пока нет</div>'}
+        `).join('') : '<div class="empty-soft">Ответов пока нет</div>'}
       </div>
     </div>
   `);
@@ -929,6 +1094,29 @@ function renderSurveys(){
         `).join('') : '<div class="empty-soft">Предложений пока нет</div>'}
       </div>
       <p class="hint" style="margin-top:12px">Дата хранится. Авторство не хранится (принятый риск).</p>
+    </div>
+  `);
+
+  const feedbackMessages = (DB.feedbackMessages || []).slice().reverse();
+  set('feedback-inbox', `
+    <div class="survey-shell compact-shell">
+      <div class="section-head"><h2>Обращения к HR</h2><span class="chip">${feedbackMessages.length}</span></div>
+      <div class="survey-list large-list">
+        ${feedbackMessages.length ? feedbackMessages.map(message => `
+          <article class="survey-item result-row">
+            <div><strong>${esc(message.employeeName || emp(message.employeeId)?.name || 'Сотрудник')}</strong>
+              <div class="survey-item-meta">Кому: ${esc(message.toName || 'HR')} · ${esc(message.date || '')}</div>
+              <p>${esc(message.text)}</p>
+            </div>
+            <span class="chip neutral">${esc(message.status || 'Новое')}</span>
+          </article>`).join('') : '<div class="empty-soft">Новых обращений пока нет.</div>'}
+      </div>
+      <div class="section-head" style="margin-top:24px"><h2>Анонимные идеи</h2><span class="chip">${DB.ideas.length}</span></div>
+      <div class="survey-list large-list">
+        ${DB.ideas.length ? DB.ideas.slice().reverse().map(idea => `
+          <article class="survey-item result-row"><div><strong>${esc(idea.text)}</strong><div class="survey-item-meta">Дата: ${esc(idea.date || '')} · Автор анонимен</div></div><span class="chip neutral">Банк идей</span></article>
+        `).join('') : '<div class="empty-soft">Идей пока нет.</div>'}
+      </div>
     </div>
   `);
 }
@@ -957,18 +1145,518 @@ function renderAccess(){
   set('acc-active', DB.users.filter(u => u.status !== 'Заблокирована').length);
   set('acc-blocked', DB.users.filter(u => u.status === 'Заблокирована').length);
   set('acc-errors', errors);
-  set('users-table', tbl(['ФИО','Логин','Роль','Статус'], DB.users.map(u => [esc(u.name), esc(u.login), esc(u.role), pill(u.status)]), 'Пользователей пока нет'));
+  set('users-table', tbl(['ФИО','Логин','Роль','Сотрудник','Статус','Действие'], DB.users.map((u, index) => [
+    esc(u.name), esc(u.login), esc(u.role), esc(emp(u.employeeId)?.name || '—'), pill(u.status),
+    `<button type="button" class="btn" onclick="openUser(${index})">Настроить доступ</button>`
+  ]), 'Пользователей пока нет'));
 }
-function openUser(){
-  simpleDialog('Новый пользователь', [{k:'name',l:'ФИО',req:true},{k:'login',l:'Логин',req:true},{k:'role',l:'Роль',opts:['HR','Руководитель','Сотрудник','Администратор']}], v => {
-    v.status = 'Активна'; DB.users.push(v);
+let USER_EDIT_INDEX = null;
+function openUser(index){
+  USER_EDIT_INDEX = Number.isInteger(index) ? index : null;
+  const user = USER_EDIT_INDEX === null ? {name:'',login:'',role:'Сотрудник',employeeId:'',managedEmployeeIds:[],status:'Активна'} : DB.users[USER_EDIT_INDEX];
+  const roles = ['HR', ...EMPLOYEE_ROLES];
+  $('dlgForm').innerHTML = `
+    <h2>${USER_EDIT_INDEX === null ? 'Добавить доступ' : 'Настроить доступ'}</h2>
+    <label for="u_name">ФИО *</label><input id="u_name" value="${esc(user.name)}" required>
+    <label for="u_login">Логин *</label><input id="u_login" value="${esc(user.login)}" autocomplete="off" required>
+    <label for="u_password">Пароль ${USER_EDIT_INDEX === null ? '*' : '(оставьте пустым, чтобы не менять)'}</label>
+    <input id="u_password" type="password" autocomplete="new-password" ${USER_EDIT_INDEX === null ? 'required' : ''}>
+    <label for="u_role">Доступ</label><select id="u_role" onchange="toggleManagedEmployees()">${roles.map(role => `<option ${role === user.role ? 'selected' : ''}>${esc(role)}</option>`).join('')}</select>
+    <label for="u_employee">Связанный профиль сотрудника</label>
+    <select id="u_employee"><option value="">Не связан</option>${DB.employees.map(employee => `<option value="${employee.id}" ${String(employee.id) === String(user.employeeId) ? 'selected' : ''}>${esc(employee.name)} · ${esc(employee.pos)}</option>`).join('')}</select>
+    <div id="u-managed-wrap" class="user-managed-wrap" ${isAdaptationManager(user.role) ? '' : 'hidden'}>
+      <label>Сотрудники в зоне адаптации</label>
+      <div class="user-managed-list">${DB.employees.filter(employee => employee.id !== Number(user.employeeId)).map(employee => `<label class="check"><input type="checkbox" name="managed-employee" value="${employee.id}" ${(user.managedEmployeeIds || []).includes(employee.id) ? 'checked' : ''}> ${esc(employee.name)} · ${esc(employee.pos)}</label>`).join('')}</div>
+    </div>
+    <label for="u_status">Статус доступа</label><select id="u_status"><option ${user.status === 'Активна' ? 'selected' : ''}>Активна</option><option ${user.status === 'Заблокирована' ? 'selected' : ''}>Заблокирована</option></select>
+    <p class="hint">Для сотрудника выберите связанный профиль. Руководитель адаптации увидит только отмеченных здесь сотрудников.</p>
+    <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="saveUser()">Сохранить</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
+  $('dlg').showModal();
+}
+function toggleManagedEmployees(){
+  const role = $('u_role').value;
+  $('u-managed-wrap').hidden = !isAdaptationManager(role);
+}
+function saveUser(){
+  const id = $('u_login').value.trim().toLowerCase();
+  const name = $('u_name').value.trim();
+  const role = $('u_role').value;
+  const password = $('u_password').value;
+  const employeeId = $('u_employee').value ? Number($('u_employee').value) : null;
+  const duplicate = DB.users.some((user, index) => index !== USER_EDIT_INDEX && String(user.login).toLowerCase() === id);
+  if(!name || !id){ alert('Укажите ФИО и логин.'); return; }
+  if(duplicate){ alert('Такой логин уже используется.'); return; }
+  if(USER_EDIT_INDEX === null && password.length < 8){ alert('Задайте пароль длиной не менее 8 символов.'); return; }
+  if(password && password.length < 8){ alert('Пароль должен содержать не менее 8 символов.'); return; }
+  if(isEmployeeRole(role) && !employeeId){ alert('Для сотрудника выберите связанный профиль.'); return; }
+  const managedEmployeeIds = isAdaptationManager(role)
+    ? [...document.querySelectorAll('[name="managed-employee"]:checked')].map(input => Number(input.value))
+    : [];
+  const updated = {
+    ...(USER_EDIT_INDEX === null ? {} : DB.users[USER_EDIT_INDEX]),
+    name, login:id, role, employeeId, managedEmployeeIds,
+    status:$('u_status').value
+  };
+  if(password) updated.password = password;
+  if(USER_EDIT_INDEX === null) DB.users.push(updated);
+  else DB.users[USER_EDIT_INDEX] = updated;
+  save();
+  $('dlg').close();
+  renderAccess();
+  toast('Доступ сохранён');
+}
+
+const AUTH_KEY = 'prosafe.auth.v1';
+const DEMO_PASSWORDS = {
+  'i.kuznetsov':'ProSafe2026!',
+  'e.soloveva':'ProSafe2026!',
+  'a.mikhaylova':'ProSafe2026!',
+  'o.petrova':'ProSafe2026!'
+};
+function currentUser(){
+  try{
+    const session = JSON.parse(sessionStorage.getItem(AUTH_KEY) || 'null');
+    if(!session) return null;
+    const account = DB.users.find(item => String(item.login).toLowerCase() === String(session.login).toLowerCase());
+    if(!account || account.status === 'Заблокирована'){
+      sessionStorage.removeItem(AUTH_KEY);
+      return null;
+    }
+    return account;
+  }
+  catch(e){ return null; }
+}
+function logout(){
+  sessionStorage.removeItem(AUTH_KEY);
+  location.replace('login.html');
+}
+function renderLogin(){
+  const user = currentUser();
+  if(user){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
+  const form = $('login-form');
+  if(!form) return;
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const login = $('login-name').value.trim().toLowerCase();
+    const password = $('login-password').value;
+    const account = DB.users.find(u => String(u.login).toLowerCase() === login && u.status !== 'Заблокирована');
+    const error = $('login-error');
+    if(!account || (account.password || DEMO_PASSWORDS[login]) !== password){
+      error.textContent = 'Не удалось войти. Проверьте логин и пароль.';
+      error.hidden = false;
+      $('login-password').setAttribute('aria-invalid', 'true');
+      return;
+    }
+    sessionStorage.setItem(AUTH_KEY, JSON.stringify({login:account.login}));
+    location.replace(isEmployeeRole(account.role) ? 'welcome.html' : 'home.html');
   });
+  $('login-password').addEventListener('input', () => {
+    $('login-password').removeAttribute('aria-invalid');
+    $('login-error').hidden = true;
+  });
+}
+function renderEmployeeAside(employee, account){
+  const links = [
+    ['overview','Главная'],['profile','Моя визитка'],['people','Люди ProSafe'],
+    ['history','История компании'],['org','Оргструктура'],['faq','FAQ'],
+    ['surveys','Опросы'],['resources','Документы и шаблоны']
+  ];
+  if(account.role === 'Сотрудник с адаптацией') links.push(['plan','Моя адаптация']);
+  if(isAdaptationManager(account.role)) links.push(['team','Команда и адаптация']);
+  $('aside').innerHTML = `<a class="brand" href="employee.html">On Boarding в ProSafe<small>Кабинет сотрудника</small></a>
+    <div class="employee-sidebar-user"><span class="employee-avatar">${esc((employee.name || 'С').slice(0,1))}</span><div><strong>${esc(employee.name)}</strong><small>${esc(employee.pos)}</small></div></div>
+    <nav>${links.map(([id,label]) => `<a href="#${id}" data-employee-tab="${id}">${label}</a>`).join('')}</nav>
+    <div class="sidebar-footer">
+      <div class="support-card">
+        <div class="support-title">Нужна помощь?</div>
+        <div class="support-copy">Поддержка команды на связи в рабочие часы.</div>
+        <a class="btn btn-primary support-btn" href="mailto:support@prosafe.local?subject=Поддержка%20ProSafe">Написать в поддержку</a>
+      </div>
+      <button type="button" class="linkbtn sidebar-logout" onclick="logout()">Выйти из кабинета</button>
+    </div>`;
+  $('aside').querySelectorAll('[data-employee-tab]').forEach(link => link.addEventListener('click', event => {
+    event.preventDefault();
+    document.querySelector(`.tab[data-tab="${link.dataset.employeeTab}"]`)?.click();
+  }));
+}
+function employeeProfile(login){
+  const account = DB.users.find(user => String(user.login).toLowerCase() === login);
+  return account ? emp(account.employeeId) : null;
+}
+function managerEmployees(account){
+  if(!account || !isAdaptationManager(account.role)) return [];
+  const allowed = new Set((account.managedEmployeeIds || []).map(Number));
+  return DB.employees.filter(employee => allowed.has(Number(employee.id)));
+}
+function isResponsibleTask(task, employee){
+  return Number(task.respId) === Number(employee.id)
+    || String(task.resp || '').trim().toLowerCase() === String(employee.name || '').trim().toLowerCase();
+}
+function employeeTodayTasks(employee){
+  const agenda = [];
+  DB.employees.forEach(owner => (DB.tasks[owner.id] || []).forEach((task,index) => {
+    if(taskDateFor(owner.start,task.day) !== today()) return;
+    const responsible = isResponsibleTask(task,employee);
+    if(owner.id !== employee.id && !responsible) return;
+    agenda.push({owner,task,index,responsible});
+  }));
+  return agenda.sort((a,b) => String(a.task.from || '').localeCompare(String(b.task.from || '')));
+}
+function employeeResponsibleTasks(employee){
+  return DB.employees.flatMap(owner => (DB.tasks[owner.id] || [])
+    .map((task,index) => ({owner,task,index}))
+    .filter(({task}) => isResponsibleTask(task,employee) && !['Выполнена','Проверена руководителем'].includes(task.status)));
+}
+function renderEmployeePortal(){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  if(!employee){
+    set('employee-overview', '<div class="card"><h2>Кабинет пока не настроен</h2><p>Для этой учётной записи не найден профиль сотрудника. Обратитесь в HR.</p></div>');
+    return;
+  }
+  renderEmployeeAside(employee, account);
+  const tasks = DB.tasks[employee.id] || [];
+  const completed = tasks.filter(task => ['Выполнена','Проверена руководителем'].includes(task.status)).length;
+  const nextTasks = tasks.filter(task => !['Выполнена','Проверена руководителем'].includes(task.status)).slice(0,3);
+  const day = dayOf(employee);
+  const contacts = Object.values(employee.resp || {}).filter((name,index,all) => name && all.indexOf(name) === index);
+  const peopleByName = name => DB.employees.find(item => item.name === name);
+  const hasAdaptation = account.role === 'Сотрудник с адаптацией';
+  const isManager = isAdaptationManager(account.role);
+  const visibleTabs = new Set(['overview','profile','people','history','org','faq','surveys','resources']);
+  if(hasAdaptation) visibleTabs.add('plan');
+  if(isManager) visibleTabs.add('team');
+  const titles = {
+    overview:'Главная',profile:'Моя визитка',people:'Люди ProSafe',history:'История компании',
+    org:'Оргструктура',faq:'FAQ',surveys:'Опросы',
+    resources:'Документы и шаблоны',plan:'Моя адаптация',team:'Команда и адаптация'
+  };
+  document.querySelectorAll('.employee-tabs .tab').forEach(tab => {
+    tab.hidden = !visibleTabs.has(tab.dataset.tab);
+    if(!tab.dataset.titleBound){
+      tab.dataset.titleBound = 'true';
+      tab.addEventListener('click', () => {
+        set('employee-page-title', titles[tab.dataset.tab]);
+        document.querySelectorAll('[data-employee-tab]').forEach(link => link.setAttribute('aria-current', link.dataset.employeeTab === tab.dataset.tab ? 'page' : 'false'));
+        if(tab.dataset.tab === 'org') setTimeout(() => drawOrg('employee-org-chart'),0);
+      });
+    }
+  });
+  const welcomeTab = new URLSearchParams(location.search).get('tab');
+  document.querySelector(`.tab[data-tab="${visibleTabs.has(welcomeTab) ? welcomeTab : 'overview'}"]`)?.click();
+  const todayAgenda = employeeTodayTasks(employee);
+  const responsibleTasks = employeeResponsibleTasks(employee);
+
+  set('employee-overview', `
+    <div class="employee-welcome">
+      <div><span class="survey-kicker">WELCOME · PROSAFE</span><h2>Добро пожаловать, ${esc(employee.name.split(' ')[0])}!</h2>
+        <p>Рады видеть вас в команде. В личном кабинете собраны контакты коллег, опросы, документы и помощь.</p></div>
+      ${hasAdaptation ? `<div class="employee-progress-ring"><strong>${progress(employee)}%</strong><span>адаптация</span></div>` : ''}
+    </div>
+    ${hasAdaptation ? `<div class="employee-stat-grid">
+      <article class="employee-stat"><span class="hint">Ваш этап</span><strong>День ${day} <small>из 60</small></strong></article>
+      <article class="employee-stat"><span class="hint">Задачи выполнены</span><strong>${completed} <small>из ${tasks.length}</small></strong></article>
+      <article class="employee-stat"><span class="hint">Следующий шаг</span><strong>${nextTasks.length ? `День ${esc(nextTasks[0].day || 1)}` : 'Все готово'}</strong></article>
+    </div>` : ''}
+    <section class="employee-panel employee-panel-wide employee-today-plan">
+      <div class="section-head"><h2>План на сегодня</h2><span class="chip">${today()}</span></div>
+      ${todayAgenda.length ? todayAgenda.map(({owner,task,responsible}) => `
+        <article class="employee-task-mini">
+          <span class="employee-task-day">${esc(task.from || 'Время не указано')}</span>
+          <div><strong>${esc(task.title)}</strong><div class="hint">${responsible ? `Вы ответственный · ${esc(owner.name)}` : 'Ваша задача'} · ${esc(task.place || 'Место не указано')}</div></div>
+          ${pill(task.status)}
+        </article>`).join('') : '<div class="empty-soft">На сегодня задач по плану нет.</div>'}
+    </section>
+    <div class="employee-content-grid">
+      ${hasAdaptation ? `<section class="employee-panel"><div class="section-head"><h2>Ближайшие задачи</h2><button type="button" class="linkbtn" onclick="document.querySelector('.tab[data-tab=plan]').click()">Моя адаптация →</button></div>
+        ${nextTasks.length ? nextTasks.map(task => `<article class="employee-task-mini"><span class="employee-task-day">День ${esc(task.day || 1)}</span><div><strong>${esc(task.title)}</strong><div class="hint">${esc(task.from || 'Время уточняется')} · ${esc(task.place || 'Место уточняется')}</div></div>${pill(task.status)}</article>`).join('') : '<div class="empty-soft">На данный момент новых задач нет.</div>'}
+      </section>` : `<section class="employee-panel"><h2>Мой следующий шаг</h2><p class="hint">Познакомьтесь с командой и загляните в документы — всё необходимое для работы собрано в меню.</p><button class="btn btn-primary" type="button" onclick="document.querySelector('.tab[data-tab=people]').click()">Открыть справочник сотрудников</button></section>`}
+      <section class="employee-panel"><h2>К кому обратиться</h2>
+        ${contacts.length ? contacts.map(name => { const person = peopleByName(name); return `<div class="employee-contact"><span class="employee-contact-dot">${esc(name.slice(0,1))}</span><div><strong>${esc(name)}</strong><span>${person ? esc(person.pos) : 'Ваша команда поддержки'}</span>${person?.email ? `<a href="mailto:${esc(person.email)}">${esc(person.email)}</a>` : ''}</div></div>`; }).join('') : '<p class="hint">Контакты поддержки пока не указаны.</p>'}
+      </section>
+      <section class="employee-panel"><h2>Поручения, где вы ответственный</h2>
+        ${responsibleTasks.length ? responsibleTasks.map(({owner,task}) => `<article class="employee-task-mini"><span class="employee-task-day">${esc(taskDateFor(owner.start,task.day))}</span><div><strong>${esc(task.title)}</strong><div class="hint">${esc(owner.name)} · ${esc(task.from || 'Время не указано')} · ${esc(task.place || 'Место не указано')}</div></div>${pill(task.status)}</article>`).join('') : '<div class="empty-soft">Новых поручений для вас нет.</div>'}
+      </section>
+    </div>`);
+
+  set('employee-profile', `
+    <div class="employee-section-intro"><span class="survey-kicker">Моя визитка</span><h2>Личная карточка</h2><p class="hint">Эта информация помогает коллегам найти вас и связаться с вами.</p></div>
+    <article class="employee-business-card">
+      <div class="employee-business-card-head"><span class="employee-business-avatar">${esc(employee.name.split(' ').map(part => part[0]).slice(0,2).join(''))}</span><div><h2>${esc(employee.name)}</h2><span>${esc(employee.pos)}</span></div></div>
+      <div class="employee-business-details"><div><span>Отдел</span><strong>${esc(employee.dept || '—')}</strong></div><div><span>Направление</span><strong>${esc(employee.dir || '—')}</strong></div><div><span>Руководитель</span><strong>${esc(employee.mgr || '—')}</strong></div><div><span>Телефон</span><strong>${esc(employee.phone || 'Не указан')}</strong></div><div><span>Рабочая почта</span><strong>${employee.email ? `<a href="mailto:${esc(employee.email)}">${esc(employee.email)}</a>` : 'Не указана'}</strong></div></div>
+    </article>`);
+
+  set('employee-people', `
+    <div class="employee-section-intro"><span class="survey-kicker">Команда ProSafe</span><h2>Люди ProSafe</h2><p class="hint">Справочник доступен только для просмотра. Нажмите на строку или имя, чтобы открыть визитку сотрудника.</p></div>
+    <label for="employee-people-q">Найти сотрудника</label><input id="employee-people-q" placeholder="ФИО, должность или отдел" oninput="renderEmployeePeople(this.value)">
+    <div id="employee-people-list" style="margin-top:14px">${empTable(DB.employees,'Сотрудников пока нет')}</div>`);
+
+  set('employee-history', `
+    <div class="history-shell">
+      <div class="history-header"><div><div class="history-eyebrow">О компании</div><h2>История компании</h2></div></div>
+      <div class="history-meta">Информация доступна только для просмотра.</div>
+      <div class="history-view">${esc((DB.history || '').trim() || 'История компании пока не заполнена.')}</div>
+    </div>`);
+  set('employee-org', `<div class="employee-section-intro"><span class="survey-kicker">Команда ProSafe</span><h2>Оргструктура</h2><p class="hint">Организационная структура доступна только для просмотра.</p></div><div id="employee-org-chart" class="org-chart">${orgChartMarkup()}</div>`);
+  set('employee-faq', `
+    <div class="employee-section-intro"><span class="survey-kicker">Помощь</span><h2>Частые вопросы</h2><p class="hint">Ответы доступны только для просмотра.</p></div>
+    <div class="employee-panel">${DB.faq.length ? DB.faq.map(item => `<details class="employee-faq"><summary>${esc(item.q)}</summary><p>${esc(item.a)}</p></details>`).join('') : '<p class="hint">Ответы на вопросы скоро появятся.</p>'}</div>`);
+
+  const responses = DB.surveyResponses || [];
+  const availableSurveys = DB.surveys.filter(survey => survey.status === 'Активна' && (!survey.aud || survey.aud === 'Общий' || survey.aud === 'Все' || survey.aud === 'По должности' || survey.aud === 'По сотруднику'));
+  set('employee-surveys', `
+    <div class="employee-section-intro"><span class="survey-kicker">Ваше мнение важно</span><h2>Опросы</h2><p class="hint">Ответы сохраняются в прототипе этого браузера.</p></div>
+    <div class="employee-survey-list">${availableSurveys.length ? availableSurveys.map(survey => {
+      const answered = responses.some(response => response.employeeId === employee.id && response.title === survey.title);
+      const options = String(survey.options || '').split(';').map(value => value.trim()).filter(Boolean);
+      return `<article class="employee-panel employee-survey-card"><div class="employee-survey-title"><div><span class="chip">${esc(survey.aud || 'Опрос')}</span><h3>${esc(survey.title)}</h3></div>${answered ? '<span class="pill lime">Ответ отправлен</span>' : ''}</div>
+        <p>${esc(survey.question || 'Поделитесь своим мнением')}</p>
+        ${answered ? '<p class="hint">Спасибо за ваш ответ.</p>' : `<div class="employee-survey-answer">${options.length ? options.map((option,index) => `<label class="employee-survey-option"><input type="radio" name="survey-${indexOfSurvey(survey)}" value="${esc(option)}"> ${esc(option)}</label>`).join('') : `<textarea id="survey-answer-${indexOfSurvey(survey)}" rows="3" placeholder="Ваш ответ"></textarea>`}
+        <button class="btn btn-primary" type="button" onclick="submitEmployeeSurvey(${indexOfSurvey(survey)})">Отправить ответ</button></div>`}
+      </article>`;
+    }).join('') : '<div class="card empty">Активных опросов пока нет.</div>'}</div>
+    <div id="employee-feedback" class="employee-feedback-wrap"></div>`);
+  renderEmployeeFeedback(employee);
+
+  renderEmployeeResources(employee);
+
+  set('employee-plan', hasAdaptation ? `
+    <div class="employee-section-intro"><span class="survey-kicker">План адаптации</span><h2>Ваши шаги на ближайшее время</h2><p class="hint">Отмечайте задачу выполненной после того, как завершите её. Ответственный подтвердит результат.</p></div>
+    <div class="employee-task-list">${tasks.length ? tasks.map((task,index) => {
+      const done = ['Выполнена','Проверена руководителем'].includes(task.status);
+      const resp = task.respId ? emp(task.respId)?.name : task.resp;
+      return `<article class="employee-task-card ${done ? 'is-done' : ''}">
+        <div class="employee-task-card-day">День <strong>${esc(task.day || 1)}</strong></div>
+        <div class="employee-task-card-body"><div class="employee-task-card-head"><h3>${esc(task.title)}</h3>${pill(task.status)}</div>
+          <div class="employee-task-meta"><span>Дата: ${taskDateFor(employee.start,task.day)}</span><span>Время: ${esc(task.from || '—')} – ${esc(task.to || '—')}</span><span>Место: ${esc(task.place || 'Не указано — уточните у руководителя')}</span><span>Ответственный: ${esc(resp || '—')}</span></div>
+          ${['Назначена','В работе'].includes(task.status) ? `<button type="button" class="btn btn-primary" onclick="completeEmployeeTask(${index})">Отметить выполненной</button>` : ''}
+        </div>
+      </article>`;
+    }).join('') : '<div class="card empty">План адаптации пока не назначен. Свяжитесь с HR.</div>'}</div>` : '');
+
+  set('employee-team', isManager ? `
+    <div class="employee-section-intro"><span class="survey-kicker">Руководитель адаптации</span><h2>Сотрудники в вашей зоне ответственности</h2><p class="hint">Вы можете просматривать и редактировать планы только сотрудников, назначенных вам HR.</p></div>
+    <label for="managed-employee-select">Сотрудник</label>
+    <select id="managed-employee-select" onchange="renderManagedPlan(this.value)">${managerEmployees(account).map(member => `<option value="${member.id}">${esc(member.name)} · ${esc(member.pos)}</option>`).join('') || '<option value="">Сотрудники не назначены</option>'}</select>
+    <div id="managed-plan-list" style="margin-top:16px">${managerEmployees(account).length ? renderManagedPlanMarkup(managerEmployees(account)[0]) : '<div class="card empty">Попросите HR назначить сотрудников в настройках доступа.</div>'}</div>` : '');
+}
+function indexOfSurvey(survey){ return DB.surveys.indexOf(survey); }
+function renderEmployeePeople(query=''){
+  const search = query.trim().toLowerCase();
+  const matches = DB.employees.filter(employee => `${employee.name} ${employee.pos} ${employee.dept} ${employee.dir}`.toLowerCase().includes(search));
+  set('employee-people-list', empTable(matches,'Сотрудники не найдены'));
+}
+function employeeDocumentItems(employee,kind){
+  const items = DB[kind] || [];
+  return kind === 'templates' ? items : items.filter(doc => !doc.aud || doc.aud === 'Все' || doc.aud === employee.dir);
+}
+function employeeDocContent(employee,category,query=''){
+  const groups = [
+    {key:'docs',label:'Популярные документы'},
+    {key:'templates',label:'Популярные шаблоны'},
+    {key:'corpDocs',label:'Популярные материалы'}
+  ];
+  const visible = kind => employeeDocumentItems(employee,kind).map((item,index) => ({item,index,kind}));
+  if(category === 'search'){
+    if(query.trim()){
+      const results = groups.flatMap(group => visible(group.key))
+        .filter(({item}) => `${item.title} ${item.cat || ''}`.toLowerCase().includes(query.trim().toLowerCase()));
+      return results.length
+        ? results.map(({item,kind,index}) => employeeDocEntry(item,kind,index)).join('')
+        : '<div class="empty-soft">Ничего не найдено.</div>';
+    }
+    return groups.map(group => `<section class="employee-panel employee-panel-wide"><h2>${group.label}</h2>${visible(group.key).slice(0,3).map(({item,index}) => employeeDocEntry(item,group.key,index)).join('') || '<div class="empty-soft">Материалы пока не добавлены.</div>'}</section>`).join('');
+  }
+  const list = visible(category);
+  return list.length ? list.map(({item,index}) => employeeDocEntry(item,category,index)).join('') : '<div class="empty-soft">Материалы пока не добавлены.</div>';
+}
+function employeeDocEntry(item,kind,index){
+  const label = kind === 'templates' ? 'Шаблон' : kind === 'corpDocs' ? 'Материал' : 'Документ';
+  return `<article class="employee-resource"><div><strong>${esc(item.title)}</strong><span>${esc(item.cat || label)} · ${esc(item.ver || 'v1')}</span></div><button type="button" class="btn" onclick="downloadEmployeeDoc('${kind}',${index})">Скачать</button></article>`;
+}
+function renderEmployeeResources(employee,category='search',query=''){
+  set('employee-resources', `
+    <div class="employee-section-intro"><span class="survey-kicker">Полезное</span><h2>Документы и шаблоны</h2><p class="hint">Ищите и скачивайте доступные материалы. Редактирование доступно только HR.</p></div>
+    <div class="employee-doc-tabs" role="tablist" aria-label="Категории материалов">
+      ${[['search','Поиск'],['docs','Документы'],['templates','Шаблоны'],['corpDocs','Корпоративные документы']].map(([key,label]) => `<button type="button" class="tab" aria-selected="${category === key}" onclick="selectEmployeeDocCategory('${key}')">${label}</button>`).join('')}
+    </div>
+    ${category === 'search' ? `<label for="employee-doc-q">Поиск по документам и шаблонам</label><input id="employee-doc-q" placeholder="Название или категория" value="${esc(query)}" oninput="renderEmployeeDocSearch(this.value)">` : ''}
+    <div class="employee-doc-results" id="employee-doc-results">${employeeDocContent(employee,category,query)}</div>`);
+}
+function renderEmployeeDocSearch(query){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  if(employee) set('employee-doc-results',employeeDocContent(employee,'search',query));
+}
+function selectEmployeeDocCategory(category){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  if(!employee || !['search','docs','templates','corpDocs'].includes(category)) return;
+  renderEmployeeResources(employee,category);
+}
+function downloadEmployeeDoc(kind,index){
+  if(!['docs','templates','corpDocs'].includes(kind) || !Number.isInteger(index)){ toast('Не удалось открыть материал'); return; }
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  const item = employee && employeeDocumentItems(employee,kind)[index];
+  if(!item){ toast('Материал недоступен'); return; }
+  downloadDoc(item.title,kind === 'templates' ? 'Шаблон' : kind === 'corpDocs' ? 'Корпоративный документ' : 'Документ');
+}
+function renderEmployeeFeedback(employee){
+  const recruiters = DB.users.filter(user => user.role === 'HR' && user.status !== 'Заблокирована');
+  set('employee-feedback', `
+    <div class="employee-content-grid employee-feedback-grid">
+      <section class="employee-panel"><div class="survey-kicker">Анонимно</div><h2>Банк идей</h2>
+        <p class="hint">Предложите, что можно улучшить. Имя и профиль автора не сохраняются.</p>
+        <label for="employee-idea-text">Ваша идея</label><textarea id="employee-idea-text" rows="4" maxlength="1000" placeholder="Напишите предложение"></textarea>
+        <button class="btn btn-primary" type="button" onclick="submitAnonymousIdea()">Отправить идею</button>
+      </section>
+      <section class="employee-panel"><div class="survey-kicker">Личное обращение</div><h2>Написать рекрутеру</h2>
+        <p class="hint">Обращение будет видно выбранному HR и в кабинете HR.</p>
+        <label for="employee-message-to">Кому</label>
+        <select id="employee-message-to">${recruiters.map(user => `<option value="${esc(user.login)}">${esc(user.name)}</option>`).join('') || '<option value="">HR пока не назначен</option>'}</select>
+        <label for="employee-message-text">Сообщение</label><textarea id="employee-message-text" rows="4" maxlength="2000" placeholder="Напишите сообщение"></textarea>
+        <button class="btn btn-primary" type="button" onclick="sendRecruiterMessage()" ${recruiters.length ? '' : 'disabled'}>Отправить HR</button>
+      </section>
+    </div>`);
+}
+function submitAnonymousIdea(){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  const text = ($('employee-idea-text')?.value || '').trim();
+  if(!employee){ toast('Не удалось определить профиль сотрудника'); return; }
+  if(!text){ alert('Напишите идею перед отправкой.'); return; }
+  DB.ideas = DB.ideas || [];
+  DB.ideas.push({text,date:today(),anonymous:true});
+  save();
+  renderEmployeeFeedback(employee);
+  toast('Идея отправлена анонимно');
+}
+function sendRecruiterMessage(){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  const toLogin = $('employee-message-to')?.value || '';
+  const recruiter = DB.users.find(user => user.role === 'HR' && user.status !== 'Заблокирована' && user.login === toLogin);
+  const text = ($('employee-message-text')?.value || '').trim();
+  if(!employee || !recruiter){ toast('Не удалось определить сотрудника или HR'); return; }
+  if(!text){ alert('Напишите сообщение перед отправкой.'); return; }
+  DB.feedbackMessages = DB.feedbackMessages || [];
+  DB.feedbackMessages.push({employeeId:employee.id,employeeName:employee.name,toLogin:recruiter.login,toName:recruiter.name,text,date:new Date().toLocaleString('ru-RU'),status:'Новое'});
+  save();
+  renderEmployeeFeedback(employee);
+  toast('Сообщение отправлено HR');
+}
+function submitEmployeeSurvey(index){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  const survey = DB.surveys[index];
+  if(!employee || !survey || survey.status !== 'Активна') return;
+  DB.surveyResponses = DB.surveyResponses || [];
+  if(DB.surveyResponses.some(response => response.employeeId === employee.id && response.title === survey.title)){ toast('Вы уже ответили на этот опрос'); return; }
+  const options = String(survey.options || '').split(';').map(value => value.trim()).filter(Boolean);
+  const answer = options.length
+    ? document.querySelector(`input[name="survey-${index}"]:checked`)?.value || ''
+    : ($(`survey-answer-${index}`)?.value || '').trim();
+  if(!answer){ alert('Выберите вариант или введите ответ.'); return; }
+  DB.surveyResponses.push({employeeId:employee.id,title:survey.title,answer,date:today()});
+  save();
+  renderEmployeePortal();
+  document.querySelector('.tab[data-tab="surveys"]')?.click();
+  toast('Ответ отправлен');
+}
+function managedEmployee(account, employeeId){
+  return !!account && isAdaptationManager(account.role) && managerEmployees(account).find(member => Number(member.id) === Number(employeeId));
+}
+function renderManagedPlanMarkup(employee){
+  if(!employee) return '<div class="card empty">Выберите сотрудника.</div>';
+  const tasks = DB.tasks[employee.id] || [];
+  return `<div class="plan-template-item">
+    <div class="section-head"><div><h2>${esc(employee.name)}</h2><div class="hint">${esc(employee.pos)} · ${esc(employee.dept)} · День ${dayOf(employee)}</div></div>
+      <button type="button" class="btn btn-primary" onclick="openManagedTaskEditor(${employee.id})">Добавить задачу</button>
+    </div>
+    ${tasks.length ? tasks.map((task,index) => `<article class="employee-managed-task"><div><strong>День ${esc(task.day || 1)} · </strong><button type="button" class="linkbtn" onclick="openManagedTaskEditor(${employee.id},${index})">${esc(task.title)}</button><div class="hint">${esc(task.from || '—')}–${esc(task.to || '—')} · ${esc(task.place || '—')} · ${esc(task.resp || '—')}</div>${pill(task.status)}</div>
+      <div class="actions"><button class="btn" type="button" onclick="openManagedTaskEditor(${employee.id},${index})">Изменить</button><button class="btn btn-ghost" type="button" onclick="removeManagedTask(${employee.id},${index})">Удалить</button></div>
+    </article>`).join('') : '<div class="empty-soft">В плане пока нет задач.</div>'}
+  </div>`;
+}
+function renderManagedPlan(employeeId){
+  const account = currentUser();
+  const employee = managedEmployee(account,employeeId);
+  if(!employee){ set('managed-plan-list','<div class="card empty">Нет доступа к этому сотруднику.</div>'); return; }
+  set('managed-plan-list',renderManagedPlanMarkup(employee));
+}
+function openManagedTaskEditor(employeeId,index){
+  const account = currentUser();
+  const employee = managedEmployee(account,employeeId);
+  if(!employee){ toast('Нет доступа к этому сотруднику'); return; }
+  const tasks = DB.tasks[employee.id] || [];
+  const task = index === undefined ? {title:'',day:1,from:'',to:'',place:'',resp:account.name,status:'Назначена'} : tasks[index];
+  if(!task){ toast('Задача не найдена'); return; }
+  $('dlg2Form').innerHTML = `<h2>${index === undefined ? 'Добавить задачу адаптации' : 'Изменить задачу адаптации'}</h2>
+    <label for="mt-title">Название *</label><input id="mt-title" value="${esc(task.title)}">
+    <div class="cols" style="gap:12px"><div><label for="mt-day">День</label><input id="mt-day" type="number" min="1" max="60" value="${esc(task.day || 1)}"></div><div><label for="mt-place">Место</label><input id="mt-place" value="${esc(task.place || '')}"></div></div>
+    <div class="cols" style="gap:12px"><div><label for="mt-from">Время с</label><input id="mt-from" type="time" value="${esc(task.from || '')}"></div><div><label for="mt-to">Время до</label><input id="mt-to" type="time" value="${esc(task.to || '')}"></div></div>
+    <label for="mt-resp">Ответственный</label><input id="mt-resp" value="${esc(task.resp || account.name)}">
+    <label for="mt-status">Статус</label><select id="mt-status">${['Назначена','В работе','Выполнена','Ожидает проверки','Проверена руководителем'].map(status => `<option ${status === task.status ? 'selected' : ''}>${status}</option>`).join('')}</select>
+    <div class="actions" style="margin-top:18px"><button type="button" class="btn btn-primary" onclick="saveManagedTask(${employee.id},${index === undefined ? 'null' : index})">Сохранить</button><button type="button" class="btn" onclick="$('dlg2').close()">Отмена</button></div>`;
+  $('dlg2').showModal();
+}
+function saveManagedTask(employeeId,index){
+  const account = currentUser();
+  const employee = managedEmployee(account,employeeId);
+  const title = $('mt-title').value.trim();
+  if(!employee || !title){ alert(employee ? 'Укажите название задачи.' : 'Нет доступа к этому сотруднику.'); return; }
+  DB.tasks[employee.id] = DB.tasks[employee.id] || [];
+  const resp = $('mt-resp').value.trim() || account.name;
+  const responsible = DB.employees.find(item => item.name.toLowerCase() === resp.toLowerCase());
+  const task = {title,day:Math.max(1,Math.min(60,Number($('mt-day').value)||1)),from:$('mt-from').value,to:$('mt-to').value,place:$('mt-place').value.trim()||'—',respId:responsible?.id || null,resp,status:$('mt-status').value};
+  if(index === null) DB.tasks[employee.id].push(task);
+  else if(DB.tasks[employee.id][index]) DB.tasks[employee.id][index] = {...DB.tasks[employee.id][index],...task};
+  else return;
+  save();
+  $('dlg2').close();
+  renderManagedPlan(employee.id);
+  toast('План адаптации обновлён');
+}
+function removeManagedTask(employeeId,index){
+  const account = currentUser();
+  const employee = managedEmployee(account,employeeId);
+  if(!employee || !DB.tasks[employee.id]?.[index]){ toast('Нет доступа к этой задаче'); return; }
+  if(!confirm('Удалить задачу из плана адаптации?')) return;
+  DB.tasks[employee.id].splice(index,1);
+  save();
+  renderManagedPlan(employee.id);
+  toast('Задача удалена');
+}
+function completeEmployeeTask(index){
+  const account = currentUser();
+  const employee = account && employeeProfile(String(account.login).toLowerCase());
+  if(!account || account.role !== 'Сотрудник с адаптацией') return;
+  const task = employee && DB.tasks[employee.id]?.[index];
+  if(!task || !['Назначена','В работе'].includes(task.status)) return;
+  task.status = 'Выполнена';
+  save();
+  renderEmployeePortal();
+  document.querySelector('.tab[data-tab="plan"]')?.click();
+  toast('Задача отмечена выполненной');
 }
 
 const PAGES = {home:renderHome, people:renderPeople, staff:renderStaff, docs:renderDocs, reports:renderReports, adapt:renderAdapt, surveys:renderSurveys, access:renderAccess};
 document.addEventListener('DOMContentLoaded', () => {
-  injectDialogs(); renderAside(); bindTabs();
   const p = document.body.dataset.page;
+  const user = currentUser();
+  if(p === 'login'){ renderLogin(); return; }
+  if(!user){ location.replace('login.html'); return; }
+  if(p === 'welcome'){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
+  if(p === 'employee'){
+    if(!isEmployeeRole(user.role)){ location.replace('home.html'); return; }
+    injectDialogs();
+    bindTabs();
+    renderEmployeePortal();
+    return;
+  }
+  if(isEmployeeRole(user.role)){ location.replace('employee.html'); return; }
+  injectDialogs(); renderAside(); bindTabs();
   window.PAGE_RENDER = PAGES[p] || null;
   if(window.PAGE_RENDER) PAGE_RENDER();
 });

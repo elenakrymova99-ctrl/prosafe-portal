@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход — ProSafe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="login">
+  <main class="login-page">
+    <section class="login-card" aria-labelledby="login-title">
+      <a class="login-brand" href="login.html">On Boarding <span>в ProSafe</span></a>
+      <div class="login-kicker">Единое пространство команды</div>
+      <h1 id="login-title">Вход в портал</h1>
+      <p class="login-intro">Введите логин и пароль, чтобы открыть свой рабочий кабинет.</p>
+      <form id="login-form" novalidate>
+        <label for="login-name">Логин</label>
+        <input id="login-name" name="username" autocomplete="username" required autofocus>
+        <label for="login-password">Пароль</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <div id="login-error" class="login-error" role="alert" hidden></div>
+        <button class="btn btn-primary login-submit" type="submit">Войти</button>
+      </form>
+      <div class="login-demo">
+        <strong>Демо-доступы</strong>
+        <span>HR: <code>e.soloveva</code> / <code>ProSafe2026!</code></span>
+        <span>Сотрудник с адаптацией: <code>i.kuznetsov</code> / <code>ProSafe2026!</code></span>
+        <span>Руководитель адаптации: <code>o.petrova</code> / <code>ProSafe2026!</code></span>
+      </div>
+      <p class="login-disclaimer">Демонстрационный вход для прототипа. Для реальной защиты аккаунтов требуется серверная авторизация.</p>
+    </section>
+    <aside class="login-aside" aria-hidden="true">
+      <div class="login-aside-mark">P</div>
+      <p>Начните свой путь в ProSafe</p>
+      <span>План адаптации, документы и поддержка команды — в одном месте.</span>
+    </aside>
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>

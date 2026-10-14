@@ -13,7 +13,7 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Опросы и результаты</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="overview" aria-selected="true">Обзор</button>
       <button class="tab" role="tab" data-tab="eval">Запрос на оценку</button>
@@ -22,20 +22,21 @@
       <button class="tab" role="tab" data-tab="res-evals">Результаты оценок</button>
       <button class="tab" role="tab" data-tab="res-surveys">Результаты опросов</button>
       <button class="tab" role="tab" data-tab="ideas">Банк идей</button>
+      <button class="tab" role="tab" data-tab="feedback">Сообщения сотрудников</button>
     </div>
     <section data-panel="overview">
       <div id="survey-overview"></div>
     </section>
     <section data-panel="eval" hidden>
-    <div class="card survey-compact" style="max-width:640px"><h3>Запросить оценку адаптации</h3>
+    <div class="card survey-compact eval-request-card"><h3>Запросить оценку адаптации</h3>
       <p class="hint">Критерии берутся из шаблона должности. Оценка 1–5 и комментарий.</p>
       <label for="ev-emp">Сотрудник</label><select id="ev-emp"></select>
       <label for="ev-rec">Кому отправить</label><select id="ev-rec"><option>Руководитель адаптации</option><option>Наставник</option><option>Оба</option></select>
-      <div class="actions" style="margin-top:16px"><button class="btn btn-primary" onclick="sendEval()">Отправить запрос</button></div>
+      <div class="actions eval-request-actions"><button class="btn btn-primary" onclick="sendEval()">Отправить запрос</button></div>
     </div>
     </section>
     <section data-panel="create" hidden>
-<div class="card survey-compact"><div class="actions" style="margin:0"><button class="btn btn-primary" onclick="openSurvey()">Создать опрос</button></div>
+<div class="card survey-compact"><div class="actions compact-actions"><button class="btn btn-primary" onclick="openSurvey()">Создать опрос</button></div>
     <p class="hint">Опрос назначается по должности или по сотруднику.</p></div>
     </section>
     <section data-panel="list" hidden>
@@ -50,6 +51,9 @@
     </section>
     <section data-panel="ideas" hidden>
     <div id="ideas-list"></div>
+    </section>
+    <section data-panel="feedback" hidden>
+    <div id="feedback-inbox"></div>
     </section>
   </main>
 </div>

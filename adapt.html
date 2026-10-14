@@ -13,7 +13,7 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Управление адаптацией</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
     <div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="list">Сотрудники и прогресс</button><button class="tab" role="tab" data-tab="plan">План адаптации</button></div>
     <section data-panel="list" hidden>
     <div class="note">Прогресс: задачи 60%, ознакомление с документами 20%, опросы 10%, время в 60 днях 10%.</div>
@@ -23,16 +23,16 @@
     <div class="note">Шаблоны планов адаптации задаются по должностям и используются как базовый сценарий для новых сотрудников.</div>
 
     <label for="plan-pos">Должность</label>
-    <select id="plan-pos" style="max-width:420px" onchange="renderPositionPlan()"></select>
-    <div class="actions" style="margin:12px 0 0">
+    <select id="plan-pos" class="plan-select" onchange="renderPositionPlan()"></select>
+    <div class="actions plan-actions">
       <button class="btn btn-primary" type="button" onclick="openPlanTaskEditor()">Добавить задачу в шаблон</button>
     </div>
-    <div id="plan-template-list" style="margin-top:16px"></div>
+    <div id="plan-template-list" class="plan-template-list"></div>
 
-    <div style="margin-top:24px">
+    <div class="plan-employee-section">
       <label for="plan-emp">Сотрудник</label>
-      <select id="plan-emp" style="max-width:420px" onchange="renderPlanTable(this.value)"></select>
-      <div id="plan-table" style="margin-top:16px"></div>
+      <select id="plan-emp" class="plan-select" onchange="renderPlanTable(this.value)"></select>
+      <div id="plan-table" class="plan-template-list"></div>
     </div>
     </section>
   </main>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мой кабинет — ProSafe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="employee">
+  <div class="app employee-app">
+    <aside id="aside"></aside>
+    <main id="view" tabindex="-1">
+      <div class="topbar">
+        <div><div class="hint">Личный кабинет</div><h1 id="employee-page-title">Мой обзор</h1></div>
+      </div>
+      <div class="tabs employee-tabs" role="tablist" aria-label="Разделы личного кабинета">
+        <button class="tab" type="button" role="tab" data-tab="overview">Главная</button>
+        <button class="tab" type="button" role="tab" data-tab="profile">Моя визитка</button>
+        <button class="tab" type="button" role="tab" data-tab="people">Люди ProSafe</button>
+        <button class="tab" type="button" role="tab" data-tab="history">История компании</button>
+        <button class="tab" type="button" role="tab" data-tab="org">Оргструктура</button>
+        <button class="tab" type="button" role="tab" data-tab="faq">FAQ</button>
+        <button class="tab" type="button" role="tab" data-tab="surveys">Опросы</button>
+        <button class="tab" type="button" role="tab" data-tab="resources">Документы и шаблоны</button>
+        <button class="tab" type="button" role="tab" data-tab="plan">Моя адаптация</button>
+        <button class="tab" type="button" role="tab" data-tab="team">Команда и адаптация</button>
+      </div>
+      <section data-panel="overview" id="employee-overview" hidden></section>
+      <section data-panel="profile" id="employee-profile" hidden></section>
+      <section data-panel="people" id="employee-people" hidden></section>
+      <section data-panel="history" id="employee-history" hidden></section>
+      <section data-panel="org" id="employee-org" hidden></section>
+      <section data-panel="faq" id="employee-faq" hidden></section>
+      <section data-panel="surveys" id="employee-surveys" hidden></section>
+      <section data-panel="team" id="employee-team" hidden></section>
+      <section data-panel="plan" id="employee-plan" hidden></section>
+      <section data-panel="resources" id="employee-resources" hidden></section>
+    </main>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -13,23 +13,23 @@
   <aside id="aside"></aside>
   <main id="view" tabindex="-1">
     <div class="topbar"><div><h1>Сотрудники и должности</h1></div>
-      <div class="actions" style="margin:0"><button class="btn btn-ghost" onclick="history.back()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
-    <div class="card" style="margin-bottom:16px">
+      <div class="actions topbar-actions"><button class="btn btn-ghost" onclick="goBack()">← Назад</button><a class="btn" href="home.html">Главная</a></div></div>
+    <div class="card staff-search-card">
       <label for="staff-global-q">Поиск по сотрудникам и должностям</label>
       <input id="staff-global-q" oninput="renderStaffSearch(this.value)" placeholder="ФИО, должность, отдел, направление">
     </div>
     <div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="staff">Сотрудники</button><button class="tab" role="tab" data-tab="positions">Должности</button><button class="tab" role="tab" data-tab="bulk">Загрузка списками</button></div>
     <section data-panel="staff" hidden>
-    <div class="actions" style="margin-top:12px"><button class="btn btn-primary" onclick="openCreateEmployee()">Создать сотрудника</button></div>
-    <div id="staff-table" style="margin-top:12px"></div>
+    <div class="actions content-actions"><button class="btn btn-primary" onclick="openCreateEmployee()">Создать сотрудника</button></div>
+    <div id="staff-table" class="staff-table"></div>
     </section>
     <section data-panel="positions" hidden>
-    <div class="actions" style="margin-top:12px"><button class="btn btn-primary" onclick="openPositionDialog('', PAGE_RENDER)">Создать должность</button></div>
-    <div id="positions-table" style="margin-top:12px"></div>
+    <div class="actions content-actions"><button class="btn btn-primary" onclick="openPositionDialog('', PAGE_RENDER)">Создать должность</button></div>
+    <div id="positions-table" class="staff-table"></div>
     <p class="hint">Шаблон адаптации должности появится в карточке должности (следующий шаг).</p>
     </section>
     <section data-panel="bulk" hidden>
-    <div class="cols"><div class="card"><h3>Сотрудники</h3><div class="actions" style="margin:12px 0 0"><button class="btn" disabled>Скачать шаблон</button><button class="btn" disabled>Загрузить</button></div><p class="hint">Загрузка Excel — этап 2, шаблон от заказчика не получен.</p></div><div class="card"><h3>Должности</h3><div class="actions" style="margin:12px 0 0"><button class="btn" disabled>Скачать шаблон</button><button class="btn" disabled>Загрузить</button></div><p class="hint">Загрузка Excel — этап 2.</p></div></div>
+    <div class="cols"><div class="card"><h3>Сотрудники</h3><div class="actions bulk-actions"><button class="btn" disabled>Скачать шаблон</button><button class="btn" disabled>Загрузить</button></div><p class="hint">Загрузка Excel — этап 2, шаблон от заказчика не получен.</p></div><div class="card"><h3>Должности</h3><div class="actions bulk-actions"><button class="btn" disabled>Скачать шаблон</button><button class="btn" disabled>Загрузить</button></div><p class="hint">Загрузка Excel — этап 2.</p></div></div>
     </section>
   </main>
 </div>
