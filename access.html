@@ -25,7 +25,7 @@
     </section>
     <section data-panel="users" hidden>
       <div class="actions"><button class="btn btn-primary" onclick="openUser()">Добавить пользователя</button></div>
-      <div class="note">HR назначает каждому доступу роль и связанный профиль. Пароли хранятся в этом демонстрационном браузерном прототипе; не используйте реальные пароли.</div>
+      <div class="note">Список загружается из Supabase Auth и public.profiles. При создании доступа система выдаёт одноразовый пароль; передавайте его сотруднику лично.</div>
       <div id="users-table"></div>
     </section>
     <section data-panel="rights" hidden>
@@ -35,7 +35,7 @@
         <article class="card"><h3>Сотрудник — руководитель адаптации</h3><p>Доступ сотрудника плюс просмотр и редактирование планов назначенных HR сотрудников.</p></article>
         <article class="card"><h3>HR</h3><p>Полный кабинет управления порталом и настройка доступов пользователей.</p></article>
       </div>
-      <div class="note">Назначение сотрудников руководителю адаптации настраивается в карточке доступа. GitHub Pages не обеспечивает серверную защиту этих ролей.</div>
+      <div class="note">Назначение сотрудников и блокировка доступа настраиваются в карточке пользователя. Проверка прав выполняется Edge Function и политиками Supabase; не помещайте service_role key в сайт.</div>
     </section>
   </main>
 </div>

@@ -306,7 +306,7 @@ function renderEmpForm(){
     <input id="e_name" value="${esc(EMP.name)}" oninput="EMP.name=this.value" placeholder="Фамилия Имя Отчество">
     <div class="cols" style="gap:12px">
       <div><label for="e_phone">Телефон</label><input id="e_phone" value="${esc(EMP.phone)}" oninput="EMP.phone=this.value"></div>
-      <div><label for="e_email">Почта</label><input id="e_email" value="${esc(EMP.email)}" oninput="EMP.email=this.value"></div>
+    <div><label for="e_email">Корпоративный email для входа *</label><input id="e_email" type="email" required value="${esc(EMP.email)}" oninput="EMP.email=this.value"></div>
     </div>
     <label for="p_in">Должность *</label>
     <div class="combo">
@@ -320,7 +320,7 @@ function renderEmpForm(){
     </div>
     <label class="check"><input type="checkbox" ${EMP.adapt?'checked':''} onchange="EMP.adapt=this.checked;renderEmpForm()"> Назначить адаптацию</label>
     ${EMP.adapt ? adaptBlock() + respSection() : ''}
-    <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="saveEmployee()">Сохранить</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
+    <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="saveEmployee()">Создать сотрудника и доступ</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
 }
 function pickPosRender(){
   const q = $('p_in').value.trim(), s = q.toLowerCase();
@@ -423,26 +423,59 @@ function respRender(i, q){
   $('r'+i+'_list').innerHTML = list.map((e,j) => `<button type="button" class="pitem" onclick="respPick(${j})">${esc(e.name)} <span class="hint">${esc(e.pos)}</span></button>`).join('') || (s ? '<div class="hint">Не найдено</div>' : '');
 }
 function respPick(j){ const e = window._respList[j], i = window._respIdx; EMP.resp[ROLES[i]] = e.name; $('r'+i+'_in').value = e.name; $('r'+i+'_list').innerHTML = ''; }
-function saveEmployee(){
+async function saveEmployee(){
   if(!EMP.name.trim()){ alert('Укажите ФИО'); return; }
   if(!EMP.posName.trim()){ alert('Укажите должность'); return; }
+  if(!EMP.email.trim() || !$('e_email').validity.valid){ alert('Укажите корректный корпоративный email для входа.'); return; }
   if(EMP.adapt && !EMP.start){ alert('Укажите первый рабочий день'); return; }
-  const id = Date.now(), r = EMP.resp;
-  const e = {id, name:EMP.name.trim(), pos:EMP.posName.trim(), dept:EMP.dept||'—', dir:EMP.dir, mgr:r['Руководитель адаптации']||'—',
-    phone:EMP.phone||'—', email:EMP.email||'—', contacts:true, adapt:EMP.adapt, start:EMP.adapt?EMP.start:'', status:EMP.adapt?'Активна':'Без адаптации', resp:{...r}};
-  DB.employees.push(e);
-  if(EMP.adapt) DB.tasks[id] = EMP.plan.map(t => ({...t, status:'Назначена'}));
-  save();
-  showInvite(e);
+  const button = $('dlgForm').querySelector('.btn-primary');
+  $('employee-save-error')?.remove();
+  button.disabled = true;
+  const r = EMP.resp;
+  const input = {
+    name:EMP.name.trim(),
+    email:EMP.email.trim().toLowerCase(),
+    phone:EMP.phone.trim(),
+    job_title:EMP.posName.trim(),
+    department:EMP.dept.trim() || EMP.dir,
+    direction:EMP.dir,
+    start_date:EMP.adapt ? EMP.start : null,
+    adaptation_enabled:EMP.adapt
+  };
+  try{
+    const created = await manageSupabaseEmployee({action:'create_employee',employee:input});
+    const id = supabaseEmployeeAppId(created.employee);
+    const e = {
+      id, name:created.employee.display_name, pos:created.employee.job_title,
+      dept:input.department, dir:input.direction, mgr:r['Руководитель адаптации']||'—',
+      phone:input.phone||'—', email:input.email, contacts:true,
+      adapt:input.adaptation_enabled, start:input.start_date||'',
+      status:input.adaptation_enabled?'Активна':'Без адаптации', resp:{...r}
+    };
+    DB.employees.push(e);
+    if(EMP.adapt) DB.tasks[id] = EMP.plan.map(t => ({...t, status:'Назначена'}));
+    DB.users.push({
+      id:created.user.id, name:e.name, login:input.email, role:SUPABASE_ROLE_NAMES[created.profile.role],
+      employeeId:id, status:'Активна'
+    });
+    save();
+    showInvite(e, created.password);
+  }catch(error){
+    const errorBox = document.createElement('p');
+    errorBox.id = 'employee-save-error';
+    errorBox.className = 'login-error';
+    errorBox.setAttribute('role','alert');
+    errorBox.textContent = `Не удалось создать сотрудника в Supabase: ${error.message}`;
+    button.before(errorBox);
+    button.disabled = false;
+  }
 }
 function translit(s){
   const m={а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
   return s.toLowerCase().split('').map(c => m[c] !== undefined ? m[c] : (/[a-z0-9]/.test(c) ? c : '')).join('');
 }
-function showInvite(e){
+function showInvite(e,pwd){
   const parts = e.name.split(' ');
-  const login = translit(parts[0]||'user') + '.' + translit((parts[1]||'x')[0]);
-  const pwd = Math.random().toString(36).slice(2,6) + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
   const hrName = e.resp && e.resp['HR'];
   const hr = (hrName && DB.employees.find(x => x.name === hrName)) || {name:'Контакты HR не указаны', phone:'—', email:'—'};
   $('dlgForm').innerHTML = `<h2>Сотрудник создан</h2>
@@ -450,16 +483,16 @@ function showInvite(e){
       <h3>Приглашение в портал</h3>
       <p>Здравствуйте, ${esc(parts[1]||parts[0])}! Вам открыт доступ к порталу On Boarding в ProSafe.</p>
       <table><tbody>
-        <tr><th style="width:140px">Логин</th><td><b>${esc(login)}</b></td></tr>
+        <tr><th style="width:140px">Логин</th><td><b>${esc(e.email)}</b></td></tr>
         <tr><th>Пароль</th><td><b>${esc(pwd)}</b></td></tr>
       </tbody></table>
-      <p class="hint" style="margin-top:12px">Уведомление: при первом входе система попросит сменить пароль. Пароль показан один раз, передайте его сотруднику лично.</p>
+      <p class="hint" style="margin-top:12px">Пароль показан один раз. Передайте его сотруднику лично и попросите сменить после входа.</p>
     </div>
     <div class="card"><h3>Если возникли трудности со входом</h3>
       <p>${esc(hr.name)}<br>Телефон: ${esc(hr.phone)}<br>Почта: ${esc(hr.email)}</p></div>
     <div class="actions" style="margin-top:16px"><button type="button" class="btn btn-primary" onclick="finishInvite()">Готово</button></div>`;
 }
-function finishInvite(){ $('dlg').close(); if(window.PAGE_RENDER) PAGE_RENDER(); toast('Сотрудник создан'); }
+function finishInvite(){ $('dlg').close(); if(window.PAGE_RENDER) PAGE_RENDER(); toast('Сотрудник и доступ созданы в Supabase'); }
 
 // ---------- Списки и разделы ----------
 function waitingList(){
@@ -1223,7 +1256,7 @@ function renderAccess(){
   set('acc-blocked', DB.users.filter(u => u.status === 'Заблокирована').length);
   set('acc-errors', errors);
   set('users-table', tbl(['ФИО','Логин','Роль','Сотрудник','Статус','Действие'], DB.users.map((u, index) => [
-    esc(u.name), esc(u.login), esc(u.role), esc(emp(u.employeeId)?.name || '—'), pill(u.status),
+    esc(u.name), esc(u.login), esc(u.role), esc(emp(u.employeeId)?.name || u.employeeName || '—'), pill(u.status),
     `<button type="button" class="btn" onclick="openUser(${index})">Настроить доступ</button>`
   ]), 'Пользователей пока нет'));
 }
@@ -1232,21 +1265,20 @@ function openUser(index){
   USER_EDIT_INDEX = Number.isInteger(index) ? index : null;
   const user = USER_EDIT_INDEX === null ? {name:'',login:'',role:'Сотрудник',employeeId:'',managedEmployeeIds:[],status:'Активна'} : DB.users[USER_EDIT_INDEX];
   const roles = ['HR', ...EMPLOYEE_ROLES];
+  const supabaseEmployees = DB.employees.filter(employee => SUPABASE_EMPLOYEE_DB_IDS.has(employee.id));
   $('dlgForm').innerHTML = `
     <h2>${USER_EDIT_INDEX === null ? 'Добавить доступ' : 'Настроить доступ'}</h2>
     <label for="u_name">ФИО *</label><input id="u_name" value="${esc(user.name)}" required>
-    <label for="u_login">Логин *</label><input id="u_login" value="${esc(user.login)}" autocomplete="off" required>
-    <label for="u_password">Пароль ${USER_EDIT_INDEX === null ? '*' : '(оставьте пустым, чтобы не менять)'}</label>
-    <input id="u_password" type="password" autocomplete="new-password" ${USER_EDIT_INDEX === null ? 'required' : ''}>
+    <label for="u_login">Корпоративный email для входа *</label><input id="u_login" type="email" value="${esc(user.login)}" autocomplete="email" required>
     <label for="u_role">Доступ</label><select id="u_role" onchange="toggleManagedEmployees()">${roles.map(role => `<option ${role === user.role ? 'selected' : ''}>${esc(role)}</option>`).join('')}</select>
     <label for="u_employee">Связанный профиль сотрудника</label>
-    <select id="u_employee"><option value="">Не связан</option>${DB.employees.map(employee => `<option value="${employee.id}" ${String(employee.id) === String(user.employeeId) ? 'selected' : ''}>${esc(employee.name)} · ${esc(employee.pos)}</option>`).join('')}</select>
+    <select id="u_employee"><option value="">Не связан</option>${supabaseEmployees.map(employee => `<option value="${employee.id}" ${String(employee.id) === String(user.employeeId) ? 'selected' : ''}>${esc(employee.name)} · ${esc(employee.pos)}</option>`).join('')}</select>
     <div id="u-managed-wrap" class="user-managed-wrap" ${isAdaptationManager(user.role) ? '' : 'hidden'}>
       <label>Сотрудники в зоне адаптации</label>
-      <div class="user-managed-list">${DB.employees.filter(employee => employee.id !== Number(user.employeeId)).map(employee => `<label class="check"><input type="checkbox" name="managed-employee" value="${employee.id}" ${(user.managedEmployeeIds || []).includes(employee.id) ? 'checked' : ''}> ${esc(employee.name)} · ${esc(employee.pos)}</label>`).join('')}</div>
+      <div class="user-managed-list">${supabaseEmployees.filter(employee => employee.id !== Number(user.employeeId)).map(employee => `<label class="check"><input type="checkbox" name="managed-employee" value="${employee.id}" ${(user.managedEmployeeIds || []).includes(employee.id) ? 'checked' : ''}> ${esc(employee.name)} · ${esc(employee.pos)}</label>`).join('')}</div>
     </div>
     <label for="u_status">Статус доступа</label><select id="u_status"><option ${user.status === 'Активна' ? 'selected' : ''}>Активна</option><option ${user.status === 'Заблокирована' ? 'selected' : ''}>Заблокирована</option></select>
-    <p class="hint">Для сотрудника выберите связанный профиль. Руководитель адаптации увидит только отмеченных здесь сотрудников.</p>
+    <p class="hint">Для сотрудника выберите связанный профиль. Новому пользователю будет создан реальный вход Supabase и показан одноразовый пароль. Руководитель адаптации увидит только отмеченных здесь сотрудников.</p>
     <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" onclick="saveUser()">Сохранить</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
   $('dlg').showModal();
 }
@@ -1254,33 +1286,55 @@ function toggleManagedEmployees(){
   const role = $('u_role').value;
   $('u-managed-wrap').hidden = !isAdaptationManager(role);
 }
-function saveUser(){
+async function saveUser(){
   const id = $('u_login').value.trim().toLowerCase();
   const name = $('u_name').value.trim();
   const role = $('u_role').value;
-  const password = $('u_password').value;
   const employeeId = $('u_employee').value ? Number($('u_employee').value) : null;
   const duplicate = DB.users.some((user, index) => index !== USER_EDIT_INDEX && String(user.login).toLowerCase() === id);
   if(!name || !id){ alert('Укажите ФИО и логин.'); return; }
-  if(duplicate){ alert('Такой логин уже используется.'); return; }
-  if(USER_EDIT_INDEX === null && password.length < 8){ alert('Задайте пароль длиной не менее 8 символов.'); return; }
-  if(password && password.length < 8){ alert('Пароль должен содержать не менее 8 символов.'); return; }
+  if(!$('u_login').validity.valid){ alert('Укажите корректный корпоративный email.'); return; }
+  if(duplicate){ alert('Такой email уже используется.'); return; }
   if(isEmployeeRole(role) && !employeeId){ alert('Для сотрудника выберите связанный профиль.'); return; }
   const managedEmployeeIds = isAdaptationManager(role)
     ? [...document.querySelectorAll('[name="managed-employee"]:checked')].map(input => Number(input.value))
     : [];
-  const updated = {
-    ...(USER_EDIT_INDEX === null ? {} : DB.users[USER_EDIT_INDEX]),
-    name, login:id, role, employeeId, managedEmployeeIds,
-    status:$('u_status').value
-  };
-  if(password) updated.password = password;
-  if(USER_EDIT_INDEX === null) DB.users.push(updated);
-  else DB.users[USER_EDIT_INDEX] = updated;
-  save();
-  $('dlg').close();
-  renderAccess();
-  toast('Доступ сохранён');
+  const employeeDbId = employeeId && role !== 'HR' ? SUPABASE_EMPLOYEE_DB_IDS.get(employeeId) : null;
+  if(employeeId && role !== 'HR' && !employeeDbId){ alert('Профиль сотрудника не загружен из Supabase. Обновите страницу и повторите попытку.'); return; }
+  const button = $('dlgForm').querySelector('.btn-primary');
+  $('access-save-error')?.remove();
+  button.disabled = true;
+  try{
+    let result;
+    if(USER_EDIT_INDEX === null){
+      result = await manageSupabaseEmployee({
+        action:'create_user',
+        user:{name,email:id,role:SUPABASE_ROLE_CODES[role],employee_id:employeeDbId}
+      });
+    }else{
+      const user = DB.users[USER_EDIT_INDEX];
+      result = await manageSupabaseEmployee({
+        action:'update_access',
+        user:{profile_id:user.id,name,email:id,role:SUPABASE_ROLE_CODES[role],employee_id:employeeDbId,status:$('u_status').value}
+      });
+    }
+    await loadSupabaseAccessUsers();
+    save();
+    $('dlg').close();
+    renderAccess();
+    if(result.password){
+      $('dlgForm').innerHTML = `<h2>Доступ создан</h2><div class="card"><p>Логин: <b>${esc(id)}</b></p><p>Пароль: <b>${esc(result.password)}</b></p><p class="hint">Скопируйте пароль и передайте сотруднику лично. Повторно он не отображается.</p></div><div class="actions" style="margin-top:16px"><button type="button" class="btn btn-primary" onclick="$('dlg').close()">Готово</button></div>`;
+      $('dlg').showModal();
+    }else toast('Доступ сохранён в Supabase');
+  }catch(error){
+    const errorBox = document.createElement('p');
+    errorBox.id = 'access-save-error';
+    errorBox.className = 'login-error';
+    errorBox.setAttribute('role','alert');
+    errorBox.textContent = `Не удалось сохранить доступ в Supabase: ${error.message}`;
+    button.before(errorBox);
+    button.disabled = false;
+  }
 }
 
 const SUPABASE_URL = 'https://zamkapigzsqgzfbblmjs.supabase.co';
@@ -1293,6 +1347,7 @@ const SUPABASE_ROLE_NAMES = {
   employee_onboarding:'Сотрудник с адаптацией',
   adaptation_manager:'Сотрудник — руководитель адаптации'
 };
+const SUPABASE_ROLE_CODES = Object.fromEntries(Object.entries(SUPABASE_ROLE_NAMES).map(([code,name]) => [name,code]));
 const SUPABASE_EMPLOYEE_IDS = {
   'anna-mikhailova':101,
   'igor-kuznetsov':102,
@@ -1300,11 +1355,20 @@ const SUPABASE_EMPLOYEE_IDS = {
   'elena-soloveva':104
 };
 const SUPABASE_EMPLOYEE_APP_IDS = new Map();
+const SUPABASE_EMPLOYEE_DB_IDS = new Map();
 function supabaseEmployeeAppId(employee){
-  if(SUPABASE_EMPLOYEE_IDS[employee.seed_key]) return SUPABASE_EMPLOYEE_IDS[employee.seed_key];
-  if(SUPABASE_EMPLOYEE_APP_IDS.has(employee.id)) return SUPABASE_EMPLOYEE_APP_IDS.get(employee.id);
+  if(SUPABASE_EMPLOYEE_IDS[employee.seed_key]){
+    SUPABASE_EMPLOYEE_DB_IDS.set(SUPABASE_EMPLOYEE_IDS[employee.seed_key],employee.id);
+    return SUPABASE_EMPLOYEE_IDS[employee.seed_key];
+  }
+  if(SUPABASE_EMPLOYEE_APP_IDS.has(employee.id)){
+    const existingId = SUPABASE_EMPLOYEE_APP_IDS.get(employee.id);
+    SUPABASE_EMPLOYEE_DB_IDS.set(existingId,employee.id);
+    return existingId;
+  }
   const id = Math.max(100,...DB.employees.map(person => Number(person.id) || 0)) + 1;
   SUPABASE_EMPLOYEE_APP_IDS.set(employee.id,id);
+  SUPABASE_EMPLOYEE_DB_IDS.set(id,employee.id);
   return id;
 }
 function supabaseHeaders(accessToken){
@@ -1331,6 +1395,13 @@ async function supabaseRequest(path,{method='GET',body,accessToken,prefer}={}){
     throw new Error(`Ошибка Supabase: ${message}`);
   }
   return result;
+}
+async function manageSupabaseEmployee(body){
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
+  return await supabaseRequest('/functions/v1/manage-employee',{
+    method:'POST',body,accessToken:session.access_token
+  });
 }
 function saveSupabaseSession(session,account){
   localStorage.setItem(SUPABASE_SESSION_KEY,JSON.stringify({
@@ -1417,11 +1488,12 @@ async function loadSupabaseEmployeeContent(){
   const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
   if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
   const token = session.access_token;
-  const [historyRows,faqRows,orgUnits,employeeRows,materialRows] = await Promise.all([
+  const [historyRows,faqRows,orgUnits,employeeRows,contactRows,materialRows] = await Promise.all([
     supabaseRequest('/rest/v1/company_history?select=title,body,updated_at&is_published=eq.true&order=updated_at.desc&limit=1',{accessToken:token}),
     supabaseRequest('/rest/v1/faqs?select=question,answer,sort_order&is_published=eq.true&order=sort_order.asc',{accessToken:token}),
     supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:token}),
-    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,manager_id,start_date,status,adaptation_enabled,directory_visible,org_units(id,code,name,parent_id)&directory_visible=eq.true',{accessToken:token}),
+    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,manager_id,start_date,status,adaptation_enabled,directory_visible,org_units(id,code,name,parent_id)',{accessToken:token}),
+    supabaseRequest('/rest/v1/employee_contacts?select=employee_id,phone,email,visible_to_employees',{accessToken:token}),
     supabaseRequest('/rest/v1/materials?select=id,kind,title,category,version,storage_path,audience_unit_id,featured,updated_at&is_published=eq.true&order=featured.desc,title.asc',{accessToken:token})
   ]);
   if(historyRows[0]) DB.history = historyRows[0].body;
@@ -1432,9 +1504,11 @@ async function loadSupabaseEmployeeContent(){
     while(current?.parent_id && unitById.has(current.parent_id)) current = unitById.get(current.parent_id);
     return current;
   };
+  const contactsByEmployeeId = new Map(contactRows.map(contact => [contact.employee_id,contact]));
   employeeRows.forEach(row => {
     const unit = row.org_units || unitById.get(row.org_unit_id);
     const root = unitRoot(unit);
+    const contact = contactsByEmployeeId.get(row.id);
     const stableId = supabaseEmployeeAppId(row);
     const person = emp(stableId) || {id:stableId,phone:'',email:'',contacts:false,resp:{}};
     Object.assign(person,{
@@ -1444,7 +1518,10 @@ async function loadSupabaseEmployeeContent(){
       dir:root?.name || unit?.name || '',
       start:row.start_date || '',
       status:row.status === 'active' ? 'Активна' : row.status,
-      adapt:row.adaptation_enabled
+      adapt:row.adaptation_enabled,
+      phone:contact?.phone || '',
+      email:contact?.email || '',
+      contacts:Boolean(contact?.visible_to_employees)
     });
     if(!emp(stableId)) DB.employees.push(person);
   });
@@ -1465,6 +1542,63 @@ async function loadSupabaseEmployeeContent(){
   DB.templates = materialRows.filter(row => row.kind === 'template').map(row => convertMaterial(row,'templates'));
   DB.corpDocs = materialRows.filter(row => row.kind === 'corporate').map(row => convertMaterial(row,'corpDocs'));
   DB.employees.sort((a,b) => a.name.localeCompare(b.name,'ru'));
+}
+async function loadSupabaseDirectory(){
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
+  const [orgUnits,employeeRows,contactRows] = await Promise.all([
+    supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:session.access_token}),
+    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,start_date,status,adaptation_enabled,org_units(id,code,name,parent_id)',{accessToken:session.access_token}),
+    supabaseRequest('/rest/v1/employee_contacts?select=employee_id,phone,email,visible_to_employees',{accessToken:session.access_token})
+  ]);
+  const unitById = new Map(orgUnits.map(unit => [unit.id,unit]));
+  const contactsByEmployeeId = new Map(contactRows.map(contact => [contact.employee_id,contact]));
+  const unitRoot = unit => {
+    let current = unit;
+    while(current?.parent_id && unitById.has(current.parent_id)) current = unitById.get(current.parent_id);
+    return current;
+  };
+  employeeRows.forEach(row => {
+    const unit = row.org_units || unitById.get(row.org_unit_id);
+    const root = unitRoot(unit);
+    const contact = contactsByEmployeeId.get(row.id);
+    const id = supabaseEmployeeAppId(row);
+    const person = emp(id) || {id,resp:{}};
+    Object.assign(person,{
+      name:row.display_name,
+      pos:row.job_title,
+      dept:unit?.name || '',
+      dir:root?.name || unit?.name || '',
+      start:row.start_date || '',
+      status:row.status === 'active' ? 'Активна' : row.status,
+      adapt:row.adaptation_enabled,
+      phone:contact?.phone || '',
+      email:contact?.email || '',
+      contacts:Boolean(contact?.visible_to_employees)
+    });
+    if(!emp(id)) DB.employees.push(person);
+  });
+  DB.employees.sort((a,b) => a.name.localeCompare(b.name,'ru'));
+}
+async function loadSupabaseAccessUsers(){
+  const rows = await manageSupabaseEmployee({action:'list_users'});
+  const previousUsers = DB.users;
+  DB.users = rows.users.map(user => {
+    const employeeId = user.employee ? supabaseEmployeeAppId(user.employee) : null;
+    const previousUser = previousUsers.find(item =>
+      item.id === user.id || String(item.login).toLowerCase() === String(user.email).toLowerCase() || item.name === user.name
+    );
+    return {
+      id:user.id,
+      name:user.name || user.email,
+      login:user.email,
+      role:SUPABASE_ROLE_NAMES[user.role] || user.role,
+      employeeId,
+      employeeName:user.employee?.display_name || '',
+      managedEmployeeIds:previousUser?.managedEmployeeIds || [],
+      status:user.status
+    };
+  });
 }
 async function uploadOrOpenEmployeeMaterial(item){
   if(!item.storagePath){
@@ -1943,6 +2077,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert.className = 'card';
         alert.setAttribute('role','alert');
         alert.textContent = `Не удалось загрузить данные из Supabase: ${error.message}`;
+        main.appendChild(alert);
+      }
+      return;
+    }
+  }
+  if(p === 'access'){
+    try{
+      await loadSupabaseDirectory();
+      await loadSupabaseAccessUsers();
+    }catch(error){
+      const main = $('view');
+      if(main){
+        const alert = document.createElement('div');
+        alert.className = 'card';
+        alert.setAttribute('role','alert');
+        alert.textContent = `Не удалось загрузить доступы из Supabase: ${error.message}`;
+        main.appendChild(alert);
+      }
+      return;
+    }
+  }
+  if(p === 'staff'){
+    try{
+      await loadSupabaseDirectory();
+    }catch(error){
+      const main = $('view');
+      if(main){
+        const alert = document.createElement('div');
+        alert.className = 'card';
+        alert.setAttribute('role','alert');
+        alert.textContent = `Не удалось загрузить сотрудников из Supabase: ${error.message}`;
         main.appendChild(alert);
       }
       return;
