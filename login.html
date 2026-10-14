@@ -14,22 +14,16 @@
       <a class="login-brand" href="login.html">On Boarding <span>в ProSafe</span></a>
       <div class="login-kicker">Единое пространство команды</div>
       <h1 id="login-title">Вход в портал</h1>
-      <p class="login-intro">Введите логин и пароль, чтобы открыть свой рабочий кабинет.</p>
+      <p class="login-intro">Введите корпоративный email и пароль учётной записи Supabase.</p>
       <form id="login-form" novalidate>
-        <label for="login-name">Логин</label>
-        <input id="login-name" name="username" autocomplete="username" required autofocus>
+        <label for="login-name">Корпоративный email</label>
+        <input id="login-name" name="username" type="email" autocomplete="username" required autofocus>
         <label for="login-password">Пароль</label>
         <input id="login-password" name="password" type="password" autocomplete="current-password" required>
         <div id="login-error" class="login-error" role="alert" hidden></div>
         <button class="btn btn-primary login-submit" type="submit">Войти</button>
       </form>
-      <div class="login-demo">
-        <strong>Демо-доступы</strong>
-        <span>HR: <code>e.soloveva</code> / <code>ProSafe2026!</code></span>
-        <span>Сотрудник с адаптацией: <code>i.kuznetsov</code> / <code>ProSafe2026!</code></span>
-        <span>Руководитель адаптации: <code>o.petrova</code> / <code>ProSafe2026!</code></span>
-      </div>
-      <p class="login-disclaimer">Демонстрационный вход для прототипа. Для реальной защиты аккаунтов требуется серверная авторизация.</p>
+      <p class="login-disclaimer">У каждой учётной записи должна быть назначена роль и связанный профиль сотрудника в базе портала.</p>
     </section>
     <aside class="login-aside" aria-hidden="true">
       <div class="login-aside-mark">P</div>

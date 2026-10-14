@@ -47,10 +47,10 @@ function seedData(){
     102:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Выполнена'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', place:'Кабинет охраны труда', respId:103, resp:'Ольга Петрова', status:'Ожидает проверки'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Назначена'}]
   };
   const users = [
-    {name:'Елена Соловьева', login:'e.soloveva', password:'ProSafe2026!', role:'HR', status:'Активна'},
-    {name:'Анна Михайлова', login:'a.mikhaylova', password:'ProSafe2026!', role:'Сотрудник с адаптацией', employeeId:101, status:'Активна'},
-    {name:'Игорь Кузнецов', login:'i.kuznetsov', password:'ProSafe2026!', role:'Сотрудник с адаптацией', employeeId:102, status:'Активна'},
-    {name:'Ольга Петрова', login:'o.petrova', password:'ProSafe2026!', role:'Сотрудник — руководитель адаптации', employeeId:103, managedEmployeeIds:[102], status:'Активна'}
+    {name:'Елена Соловьева', login:'e.soloveva', role:'HR', status:'Активна'},
+    {name:'Анна Михайлова', login:'a.mikhaylova', role:'Сотрудник с адаптацией', employeeId:101, status:'Активна'},
+    {name:'Игорь Кузнецов', login:'i.kuznetsov', role:'Сотрудник с адаптацией', employeeId:102, status:'Активна'},
+    {name:'Ольга Петрова', login:'o.petrova', role:'Сотрудник — руководитель адаптации', employeeId:103, managedEmployeeIds:[102], status:'Активна'}
   ];
   return {employees,positions,materials:[],faq,history:'Компания ProSafe работает по модели «первый месяц — приоритет». Для новых сотрудников важно быстро понять регламенты, роли и культуру команды.',docs,templates,corpDocs,surveys,surveyResponses:[],feedbackMessages:[],evals,ideas,tasks,users,accessRoleVersion:1,topicHelpers:{'Отпуск':[104,103],'Пропуск и доступ':[103,104],'IT и учётные записи':[103,104]}};
 }
@@ -80,8 +80,8 @@ function load(){
         user.role = 'Сотрудник с адаптацией';
         migrated = true;
       }
-      if(!user.password){
-        user.password = ({'e.soloveva':'ProSafe2026!','a.mikhaylova':'ProSafe2026!','i.kuznetsov':'ProSafe2026!','o.petrova':'ProSafe2026!'})[user.login] || '';
+      if('password' in user){
+        delete user.password;
         migrated = true;
       }
       if(user.role === 'Сотрудник — руководитель адаптации' && !Array.isArray(user.managedEmployeeIds)){
@@ -278,10 +278,18 @@ function simpleDialog(title, fields, onSave){
     : f.area ? `<textarea id="sf_${f.k}" rows="4"></textarea>`
     : `<input id="sf_${f.k}" placeholder="${esc(f.ph||'')}">`}`).join('')}
     <div class="actions" style="margin-top:20px"><button type="button" class="btn btn-primary" id="sf_save">Сохранить</button><button type="button" class="btn" onclick="$('dlg').close()">Отмена</button></div>`;
-  $('sf_save').onclick = () => {
+  $('sf_save').onclick = async () => {
     const v = {};
     for(const f of fields){ v[f.k] = ($('sf_'+f.k).value || '').trim(); if(f.req && !v[f.k]){ alert('Заполните: ' + f.l); return; } }
-    onSave(v); save(); $('dlg').close(); if(window.PAGE_RENDER) PAGE_RENDER(); toast('Сохранено');
+    const button = $('sf_save');
+    button.disabled = true;
+    try{
+      await onSave(v);
+      save(); $('dlg').close(); if(window.PAGE_RENDER) PAGE_RENDER(); toast('Сохранено');
+    }catch(error){
+      toast(`Не удалось сохранить: ${error.message}`);
+      button.disabled = false;
+    }
   };
   $('dlg').showModal();
 }
@@ -666,10 +674,35 @@ function bindOrgTab(){
 }
 
 function openMaterial(){ simpleDialog('Новый материал', [{k:'title',l:'Название',req:true},{k:'type',l:'Тип',opts:['Текст','PDF','Файл']}], v => DB.materials.push(v)); }
-function openFaq(){ simpleDialog('Новый вопрос', [{k:'q',l:'Вопрос',req:true},{k:'a',l:'Ответ',req:true,area:true}], v => DB.faq.push(v)); }
-function saveHistory(){
+function openFaq(){
+  simpleDialog('Новый вопрос', [{k:'q',l:'Вопрос',req:true},{k:'a',l:'Ответ',req:true,area:true}], async value => {
+    const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+    const slug = `${translit(value.q).slice(0,48) || 'faq'}-${Date.now()}`;
+    await supabaseRequest('/rest/v1/faqs',{
+      method:'POST',
+      body:{slug,question:value.q,answer:value.a,is_published:true,sort_order:DB.faq.length + 1},
+      accessToken:session?.access_token,
+      prefer:'return=minimal'
+    });
+    DB.faq.push({q:value.q,a:value.a});
+  });
+}
+async function saveHistory(){
   const value = ($('history-text') || {}).value || '';
-  DB.history = value.trim();
+  const text = value.trim();
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  try{
+    await supabaseRequest('/rest/v1/company_history?on_conflict=slug',{
+      method:'POST',
+      body:{slug:'company',title:'История компании',body:text,is_published:true},
+      accessToken:session?.access_token,
+      prefer:'resolution=merge-duplicates,return=minimal'
+    });
+  }catch(error){
+    toast(`Не удалось сохранить историю компании: ${error.message}`);
+    return;
+  }
+  DB.history = text;
   save();
   toggleHistoryEditor(false);
   toast('Сохранено');
@@ -766,8 +799,24 @@ function renderDocSearch(q){
 }
 function openDoc(kind){
   const aud = ['Все'].concat(DIRS);
-  simpleDialog('Добавить', [{k:'title',l:'Название',req:true},{k:'cat',l:'Категория'},{k:'aud',l:'Доступно',opts:aud},{k:'ver',l:'Версия',ph:'v1'}], v => {
-    v.ver = v.ver || 'v1'; v.updated = today(); DB[kind].push(v);
+  simpleDialog('Добавить', [{k:'title',l:'Название',req:true},{k:'cat',l:'Категория'},{k:'aud',l:'Доступно',opts:aud},{k:'ver',l:'Версия',ph:'v1'}], async value => {
+    const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+    const audienceCode = {'Офис':'office','Склад':'warehouse','Производство':'production'}[value.aud];
+    let audienceUnitId = null;
+    if(audienceCode){
+      const units = await supabaseRequest(`/rest/v1/org_units?select=id&code=eq.${encodeURIComponent(audienceCode)}&parent_id=is.null&limit=1`,{accessToken:session?.access_token});
+      audienceUnitId = units[0]?.id || null;
+      if(!audienceUnitId) throw new Error(`Не найдено направление «${value.aud}» в org_units.`);
+    }
+    const dbKind = kind === 'corpDocs' ? 'corporate' : kind === 'templates' ? 'template' : 'document';
+    const slug = `${translit(value.title).slice(0,48) || 'material'}-${Date.now()}`;
+    await supabaseRequest('/rest/v1/materials',{
+      method:'POST',
+      body:{slug,kind:dbKind,title:value.title,category:value.cat || '',version:value.ver || 'v1',audience_unit_id:audienceUnitId,is_published:true},
+      accessToken:session?.access_token,
+      prefer:'return=minimal'
+    });
+    DB[kind].push({title:value.title,cat:value.cat,aud:value.aud,ver:value.ver || 'v1',updated:today()});
   });
 }
 
@@ -1234,28 +1283,212 @@ function saveUser(){
   toast('Доступ сохранён');
 }
 
-const AUTH_KEY = 'prosafe.auth.v1';
-const DEMO_PASSWORDS = {
-  'i.kuznetsov':'ProSafe2026!',
-  'e.soloveva':'ProSafe2026!',
-  'a.mikhaylova':'ProSafe2026!',
-  'o.petrova':'ProSafe2026!'
+const SUPABASE_URL = 'https://zamkapigzsqgzfbblmjs.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_AakomiPsWGcahryo8go5tQ_0FmCo2s2';
+const SUPABASE_SESSION_KEY = 'prosafe.supabase.session.v1';
+const SUPABASE_ACCOUNT_KEY = 'prosafe.supabase.account.v1';
+const SUPABASE_ROLE_NAMES = {
+  hr:'HR',
+  employee:'Сотрудник',
+  employee_onboarding:'Сотрудник с адаптацией',
+  adaptation_manager:'Сотрудник — руководитель адаптации'
 };
-function currentUser(){
+const SUPABASE_EMPLOYEE_IDS = {
+  'anna-mikhailova':101,
+  'igor-kuznetsov':102,
+  'olga-petrova':103,
+  'elena-soloveva':104
+};
+const SUPABASE_EMPLOYEE_APP_IDS = new Map();
+function supabaseEmployeeAppId(employee){
+  if(SUPABASE_EMPLOYEE_IDS[employee.seed_key]) return SUPABASE_EMPLOYEE_IDS[employee.seed_key];
+  if(SUPABASE_EMPLOYEE_APP_IDS.has(employee.id)) return SUPABASE_EMPLOYEE_APP_IDS.get(employee.id);
+  const id = Math.max(100,...DB.employees.map(person => Number(person.id) || 0)) + 1;
+  SUPABASE_EMPLOYEE_APP_IDS.set(employee.id,id);
+  return id;
+}
+function supabaseHeaders(accessToken){
+  return {
+    apikey:SUPABASE_PUBLISHABLE_KEY,
+    Authorization:`Bearer ${accessToken || SUPABASE_PUBLISHABLE_KEY}`,
+    'Content-Type':'application/json'
+  };
+}
+async function supabaseRequest(path,{method='GET',body,accessToken,prefer}={}){
+  const response = await fetch(`${SUPABASE_URL}${path}`,{
+    method,
+    headers:{...supabaseHeaders(accessToken),...(prefer ? {Prefer:prefer} : {})},
+    ...(body === undefined ? {} : {body:JSON.stringify(body)})
+  });
+  const text = await response.text();
+  let result = null;
+  if(text){
+    try{ result = JSON.parse(text); }
+    catch{ throw new Error('Supabase вернул ответ в неизвестном формате.'); }
+  }
+  if(!response.ok){
+    const message = result?.msg || result?.message || result?.error_description || result?.error || `HTTP ${response.status}`;
+    throw new Error(`Ошибка Supabase: ${message}`);
+  }
+  return result;
+}
+function saveSupabaseSession(session,account){
+  localStorage.setItem(SUPABASE_SESSION_KEY,JSON.stringify({
+    access_token:session.access_token,
+    refresh_token:session.refresh_token,
+    expires_at:session.expires_at || Math.floor(Date.now()/1000) + Number(session.expires_in || 3600)
+  }));
+  localStorage.setItem(SUPABASE_ACCOUNT_KEY,JSON.stringify(account));
+}
+function clearSupabaseSession(){
+  localStorage.removeItem(SUPABASE_SESSION_KEY);
+  localStorage.removeItem(SUPABASE_ACCOUNT_KEY);
+}
+async function supabaseAccountFor(session){
+  const accessToken = session.access_token;
+  const authUser = await supabaseRequest('/auth/v1/user',{accessToken});
+  const profiles = await supabaseRequest(`/rest/v1/profiles?select=id,role,employee_id&id=eq.${encodeURIComponent(authUser.id)}&limit=1`,{accessToken});
+  const profile = profiles?.[0];
+  if(!profile || !SUPABASE_ROLE_NAMES[profile.role]){
+    throw new Error('Для пользователя не настроена допустимая роль в public.profiles. Попросите HR проверить профиль Supabase.');
+  }
+  let employee = null;
+  if(profile.employee_id){
+    const employees = await supabaseRequest(`/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,start_date,status,adaptation_enabled,org_units(id,code,name,parent_id)&id=eq.${encodeURIComponent(profile.employee_id)}&limit=1`,{accessToken});
+    employee = employees?.[0] || null;
+    if(!employee) throw new Error('Для учётной записи не найден профиль сотрудника в public.employees.');
+    const stableId = supabaseEmployeeAppId(employee);
+    const department = employee.org_units?.name || '';
+    const localEmployee = emp(stableId) || {
+      id:stableId,
+      phone:'',
+      email:authUser.email || '',
+      contacts:false,
+      resp:{}
+    };
+    Object.assign(localEmployee,{
+      name:employee.display_name,
+      pos:employee.job_title,
+      dept:department,
+      dir:employee.org_units?.code === 'office' || employee.org_units?.parent_id === null ? department : (employee.org_units?.name || department),
+      start:employee.start_date || '',
+      status:employee.status === 'active' ? 'Активна' : employee.status,
+      adapt:employee.adaptation_enabled
+    });
+    if(!emp(stableId)) DB.employees.push(localEmployee);
+    employee.appId = stableId;
+  }
+  return {
+    id:authUser.id,
+    name:employee?.display_name || authUser.email,
+    login:authUser.email,
+    email:authUser.email,
+    role:SUPABASE_ROLE_NAMES[profile.role],
+    employeeId:employee?.appId || null,
+    managedEmployeeIds:[],
+    status:'Активна',
+    supabaseProfileId:profile.id
+  };
+}
+async function restoreSupabaseSession(){
+  let session;
+  try{ session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null'); }
+  catch{ clearSupabaseSession(); return null; }
+  if(!session?.access_token || !session?.refresh_token){ clearSupabaseSession(); return null; }
   try{
-    const session = JSON.parse(sessionStorage.getItem(AUTH_KEY) || 'null');
-    if(!session) return null;
-    const account = DB.users.find(item => String(item.login).toLowerCase() === String(session.login).toLowerCase());
-    if(!account || account.status === 'Заблокирована'){
-      sessionStorage.removeItem(AUTH_KEY);
+    if(Number(session.expires_at) <= Math.floor(Date.now()/1000) + 30){
+      session = await supabaseRequest('/auth/v1/token?grant_type=refresh_token',{
+        method:'POST',
+        body:{refresh_token:session.refresh_token}
+      });
+    }
+    const account = await supabaseAccountFor(session);
+    saveSupabaseSession(session,account);
+    return account;
+  }catch(error){
+    if(/HTTP 401|invalid JWT|refresh token/i.test(error.message)){
+      clearSupabaseSession();
       return null;
     }
-    return account;
+    throw error;
+  }
+}
+async function loadSupabaseEmployeeContent(){
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
+  const token = session.access_token;
+  const [historyRows,faqRows,orgUnits,employeeRows,materialRows] = await Promise.all([
+    supabaseRequest('/rest/v1/company_history?select=title,body,updated_at&is_published=eq.true&order=updated_at.desc&limit=1',{accessToken:token}),
+    supabaseRequest('/rest/v1/faqs?select=question,answer,sort_order&is_published=eq.true&order=sort_order.asc',{accessToken:token}),
+    supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:token}),
+    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,manager_id,start_date,status,adaptation_enabled,directory_visible,org_units(id,code,name,parent_id)&directory_visible=eq.true',{accessToken:token}),
+    supabaseRequest('/rest/v1/materials?select=id,kind,title,category,version,storage_path,audience_unit_id,featured,updated_at&is_published=eq.true&order=featured.desc,title.asc',{accessToken:token})
+  ]);
+  if(historyRows[0]) DB.history = historyRows[0].body;
+  DB.faq = faqRows.map(row => ({q:row.question,a:row.answer}));
+  const unitById = new Map(orgUnits.map(unit => [unit.id,unit]));
+  const unitRoot = unit => {
+    let current = unit;
+    while(current?.parent_id && unitById.has(current.parent_id)) current = unitById.get(current.parent_id);
+    return current;
+  };
+  employeeRows.forEach(row => {
+    const unit = row.org_units || unitById.get(row.org_unit_id);
+    const root = unitRoot(unit);
+    const stableId = supabaseEmployeeAppId(row);
+    const person = emp(stableId) || {id:stableId,phone:'',email:'',contacts:false,resp:{}};
+    Object.assign(person,{
+      name:row.display_name,
+      pos:row.job_title,
+      dept:unit?.name || '',
+      dir:root?.name || unit?.name || '',
+      start:row.start_date || '',
+      status:row.status === 'active' ? 'Активна' : row.status,
+      adapt:row.adaptation_enabled
+    });
+    if(!emp(stableId)) DB.employees.push(person);
+  });
+  const convertMaterial = (row,kind) => {
+    const audience = row.audience_unit_id ? unitById.get(row.audience_unit_id) : null;
+    return {
+      id:row.id,
+      title:row.title,
+      cat:row.category,
+      aud:audience?.name || 'Все',
+      ver:row.version,
+      updated:row.updated_at ? row.updated_at.slice(0,10) : '',
+      storagePath:row.storage_path,
+      featured:row.featured
+    };
+  };
+  DB.docs = materialRows.filter(row => row.kind === 'document').map(row => convertMaterial(row,'docs'));
+  DB.templates = materialRows.filter(row => row.kind === 'template').map(row => convertMaterial(row,'templates'));
+  DB.corpDocs = materialRows.filter(row => row.kind === 'corporate').map(row => convertMaterial(row,'corpDocs'));
+  DB.employees.sort((a,b) => a.name.localeCompare(b.name,'ru'));
+}
+async function uploadOrOpenEmployeeMaterial(item){
+  if(!item.storagePath){
+    downloadDoc(item.title,'Материал');
+    return;
+  }
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  const result = await supabaseRequest(`/storage/v1/object/sign/prosafe-documents/${item.storagePath.split('/').map(encodeURIComponent).join('/')}`,{
+    method:'POST',
+    body:{expiresIn:60},
+    accessToken:session?.access_token
+  });
+  if(!result?.signedURL) throw new Error('Supabase не вернул ссылку для скачивания файла.');
+  window.open(result.signedURL.startsWith('http') ? result.signedURL : `${SUPABASE_URL}/storage/v1${result.signedURL}`,'_blank','noopener');
+}
+function currentUser(){
+  try{
+    const account = JSON.parse(localStorage.getItem(SUPABASE_ACCOUNT_KEY) || 'null');
+    return account && SUPABASE_ROLE_NAMES && Object.values(SUPABASE_ROLE_NAMES).includes(account.role) ? account : null;
   }
   catch(e){ return null; }
 }
 function logout(){
-  sessionStorage.removeItem(AUTH_KEY);
+  clearSupabaseSession();
   location.replace('login.html');
 }
 function renderLogin(){
@@ -1263,20 +1496,28 @@ function renderLogin(){
   if(user){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
   const form = $('login-form');
   if(!form) return;
-  form.addEventListener('submit', event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-    const login = $('login-name').value.trim().toLowerCase();
+    const email = $('login-name').value.trim().toLowerCase();
     const password = $('login-password').value;
-    const account = DB.users.find(u => String(u.login).toLowerCase() === login && u.status !== 'Заблокирована');
     const error = $('login-error');
-    if(!account || (account.password || DEMO_PASSWORDS[login]) !== password){
-      error.textContent = 'Не удалось войти. Проверьте логин и пароль.';
+    const submit = form.querySelector('[type="submit"]');
+    submit.disabled = true;
+    error.hidden = true;
+    try{
+      const session = await supabaseRequest('/auth/v1/token?grant_type=password',{
+        method:'POST',
+        body:{email,password}
+      });
+      const account = await supabaseAccountFor(session);
+      saveSupabaseSession(session,account);
+      location.replace(isEmployeeRole(account.role) ? 'welcome.html' : 'home.html');
+    }catch(cause){
+      error.textContent = cause.message || 'Не удалось войти. Проверьте email и пароль.';
       error.hidden = false;
-      $('login-password').setAttribute('aria-invalid', 'true');
-      return;
+      $('login-password').setAttribute('aria-invalid','true');
+      submit.disabled = false;
     }
-    sessionStorage.setItem(AUTH_KEY, JSON.stringify({login:account.login}));
-    location.replace(isEmployeeRole(account.role) ? 'welcome.html' : 'home.html');
   });
   $('login-password').addEventListener('input', () => {
     $('login-password').removeAttribute('aria-invalid');
@@ -1308,8 +1549,10 @@ function renderEmployeeAside(employee, account){
   }));
 }
 function employeeProfile(login){
-  const account = DB.users.find(user => String(user.login).toLowerCase() === login);
-  return account ? emp(account.employeeId) : null;
+  const account = currentUser();
+  if(account && String(account.login).toLowerCase() === login && account.employeeId) return emp(account.employeeId);
+  const demoAccount = DB.users.find(user => String(user.login).toLowerCase() === login);
+  return demoAccount ? emp(demoAccount.employeeId) : null;
 }
 function managerEmployees(account){
   if(!account || !isAdaptationManager(account.role)) return [];
@@ -1528,7 +1771,7 @@ function downloadEmployeeDoc(kind,index){
   const employee = account && employeeProfile(String(account.login).toLowerCase());
   const item = employee && employeeDocumentItems(employee,kind)[index];
   if(!item){ toast('Материал недоступен'); return; }
-  downloadDoc(item.title,kind === 'templates' ? 'Шаблон' : kind === 'corpDocs' ? 'Корпоративный документ' : 'Документ');
+  uploadOrOpenEmployeeMaterial(item).catch(error => toast(error.message));
 }
 function renderEmployeeFeedback(employee){
   const recruiters = DB.users.filter(user => user.role === 'HR' && user.status !== 'Заблокирована');
@@ -1670,14 +1913,42 @@ function completeEmployeeTask(index){
 }
 
 const PAGES = {home:renderHome, people:renderPeople, staff:renderStaff, docs:renderDocs, reports:renderReports, adapt:renderAdapt, surveys:renderSurveys, access:renderAccess};
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const p = document.body.dataset.page;
-  const user = currentUser();
+  let user;
+  try{
+    user = await restoreSupabaseSession();
+  }catch(error){
+    const main = $('view') || document.querySelector('.login-card');
+    if(main){
+      const alert = document.createElement('div');
+      alert.className = 'login-error';
+      alert.setAttribute('role','alert');
+      alert.textContent = `Не удалось связаться с Supabase: ${error.message}`;
+      main.prepend(alert);
+    }
+    return;
+  }
   if(p === 'login'){ renderLogin(); return; }
   if(!user){ location.replace('login.html'); return; }
   if(p === 'welcome'){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
+  if(p === 'employee' && !isEmployeeRole(user.role)){ location.replace('home.html'); return; }
+  if(p === 'employee' || p === 'people' || p === 'docs'){
+    try{
+      await loadSupabaseEmployeeContent();
+    }catch(error){
+      const main = $('view');
+      if(main){
+        const alert = document.createElement('div');
+        alert.className = 'card';
+        alert.setAttribute('role','alert');
+        alert.textContent = `Не удалось загрузить данные из Supabase: ${error.message}`;
+        main.appendChild(alert);
+      }
+      return;
+    }
+  }
   if(p === 'employee'){
-    if(!isEmployeeRole(user.role)){ location.replace('home.html'); return; }
     injectDialogs();
     bindTabs();
     renderEmployeePortal();
