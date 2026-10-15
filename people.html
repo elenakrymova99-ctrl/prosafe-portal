@@ -30,31 +30,7 @@
     <div class="row3 people-topics"><button class="block-btn" onclick="openTopic('Отпуск')"><b>Отпуск</b></button><button class="block-btn" onclick="openTopic('Пропуск и доступ')"><b>Пропуск и доступ</b></button><button class="block-btn" onclick="openTopic('Зарплата и табель')"><b>Зарплата и табель</b></button><button class="block-btn" onclick="openTopic('Оборудование и ТБ')"><b>Оборудование и ТБ</b></button><button class="block-btn" onclick="openTopic('IT и учётные записи')"><b>IT и учётные записи</b></button><button class="block-btn" onclick="openTopic('Командировки')"><b>Командировки</b></button></div>
     </section>
     <section data-panel="history" hidden>
-    <div class="history-shell">
-      <div class="history-header">
-        <div>
-          <div class="history-eyebrow">О компании</div>
-          <h2>История компании</h2>
-        </div>
-        <div class="history-actions">
-          <button id="history-edit-btn" class="btn btn-primary" type="button" onclick="toggleHistoryEditor(true)">Редактировать</button>
-        </div>
-      </div>
-      <div class="history-meta">Краткая история помогает новым сотрудникам понять, как росла и развивалась компания.</div>
-
-      <div id="history-view" class="history-view"></div>
-
-      <div id="history-editor-wrap" class="history-editor-wrap" hidden>
-        <textarea id="history-text" class="history-editor" rows="12" placeholder="Например: Компания ProSafe была основана ..."></textarea>
-        <div class="history-footer">
-          <span class="pill lime">Режим редактирования</span>
-          <div class="history-actions">
-            <button class="btn" type="button" onclick="toggleHistoryEditor(false)">Отмена</button>
-            <button class="btn btn-primary" type="button" onclick="saveHistory()">Сохранить</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div id="company-history-content"></div>
     </section>
     <section data-panel="org" hidden>
     <div id="org-chart" class="org-chart"></div>

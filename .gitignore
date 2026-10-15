@@ -8,3 +8,7 @@ Thumbs.db
 
 # Local logs
 *.log
+
+# Generated local tooling and Pages output
+supabase/.temp/
+_site/

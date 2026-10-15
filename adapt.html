@@ -24,6 +24,18 @@
 
     <label for="plan-pos">Должность</label>
     <select id="plan-pos" class="plan-select" onchange="renderPositionPlan()"></select>
+    <div class="plan-import card">
+      <div>
+        <strong>Загрузить план из файла</strong>
+        <p class="hint">Скачайте CSV-шаблон, заполните его в Excel и загрузите сюда. Импорт заменит задачи шаблона для выбранной должности.</p>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" onclick="downloadAdaptationTemplate()">Скачать пустой шаблон</button>
+        <button class="btn btn-primary" type="button" onclick="$('plan-upload-file').click()">Загрузить заполненный план</button>
+        <input id="plan-upload-file" class="plan-upload-input" type="file" accept=".csv,text/csv" onchange="importAdaptationPlan(this)">
+      </div>
+      <p class="hint">Новые планы сотрудников можно будет заполнить задачами этого шаблона при создании сотрудника.</p>
+    </div>
     <div class="actions plan-actions">
       <button class="btn btn-primary" type="button" onclick="openPlanTaskEditor()">Добавить задачу в шаблон</button>
     </div>

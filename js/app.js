@@ -1,6 +1,5 @@
-// ===== On Boarding в ProSafe — общий код прототипа кабинета HR =====
+// ===== On Boarding в ProSafe — общая логика портала =====
 const KEY = 'prosafe.proto.v1';
-const DEMO_ACCOUNT_KEY = 'prosafe.demo.account.v1';
 const THEME_KEY = 'prosafe.theme.v1';
 const THEMES = [
   {id:'prosafe',name:'Стандартная'},
@@ -36,61 +35,27 @@ function themePicker(){
 }
 document.documentElement.dataset.theme = currentTheme();
 document.body?.classList.toggle('portal-theme-dopamine',currentTheme() === 'dopamine');
-function seedData(){
-  const employees = [
-    {id:101, name:'Анна Михайлова', pos:'Менеджер по адаптации', dept:'HR', dir:'Офис', mgr:'Елена Соловьева', phone:'+7 (495) 111-22-33', email:'a.mikhaylova@prosafe.ru', contacts:true, adapt:true, start:'2026-09-12', status:'Активна', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Елена Соловьева','Наставник':'Игорь Кузнецов'}},
-    {id:102, name:'Игорь Кузнецов', pos:'Старший инженер', dept:'Производство', dir:'Производство', mgr:'Ольга Петрова', phone:'+7 (495) 222-44-55', email:'i.kuznetsov@prosafe.ru', contacts:true, adapt:true, start:'2026-09-22', status:'Активна', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Ольга Петрова','Наставник':'Анна Михайлова'}},
-    {id:103, name:'Ольга Петрова', pos:'Руководитель участка', dept:'Производство', dir:'Производство', mgr:'Елена Соловьева', phone:'+7 (495) 333-66-77', email:'o.petrova@prosafe.ru', contacts:true, adapt:false, start:'', status:'Без адаптации', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Елена Соловьева','Наставник':'Игорь Кузнецов'}},
-    {id:104, name:'Елена Соловьева', pos:'HRBP', dept:'HR', dir:'Офис', mgr:'Генеральный директор', phone:'+7 (495) 444-88-99', email:'e.soloveva@prosafe.ru', contacts:true, adapt:false, start:'', status:'Без адаптации', resp:{'HR':'Елена Соловьева','Руководитель адаптации':'Елена Соловьева','Наставник':'Анна Михайлова'}}
-  ];
-  const positions = [
-    {name:'Менеджер по адаптации', dept:'HR', dir:'Офис', tpl:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', place:'Переговорная 2', respId:104, resp:'Елена Соловьева'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', place:'Кабинет HR', respId:104, resp:'Елена Соловьева'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', place:'Переговорная 1', respId:104, resp:'Елена Соловьева'}], status:'Активна', updated:'2026-09-10'},
-    {name:'Старший инженер', dept:'Производство', dir:'Производство', tpl:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', place:'Производственный участок', respId:103, resp:'Ольга Петрова'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', place:'Кабинет охраны труда', respId:103, resp:'Ольга Петрова'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', place:'Производственный участок', respId:103, resp:'Ольга Петрова'}], status:'Активна', updated:'2026-09-11'},
-    {name:'HRBP', dept:'HR', dir:'Офис', tpl:[], status:'Активна', updated:'2026-09-09'},
-    {name:'Руководитель участка', dept:'Производство', dir:'Производство', tpl:[], status:'Активна', updated:'2026-09-09'}
-  ];
-  const faq = [
-    {q:'Кому подать заявку на отпуск?', a:'Заявку оформляет руководитель подразделения через портал HR и согласует с HRBP.'},
-    {q:'Как сменить пароль?', a:'После первого входа система предложит сменить пароль. В случае проблем — обратитесь в HR.'},
-    {q:'Что делать при проблеме с доступом?', a:'Напишите в чат HR или свяжитесь с коллегой из IT через запрос в поддержку.'}
-  ];
-  const docs = [
-    {title:'Положение об адаптации', cat:'Политика', aud:'Все', ver:'v4.2', updated:'2026-09-14'},
-    {title:'Инструкция по технике безопасности', cat:'Локальные регламенты', aud:'Производство', ver:'v1.8', updated:'2026-09-12'}
-  ];
-  const templates = [
-    {title:'План адаптации инженера', cat:'Шаблон', ver:'v2.0', updated:'2026-09-21'},
-    {title:'План адаптации менеджера', cat:'Шаблон', ver:'v3.0', updated:'2026-09-20'}
-  ];
-  const corpDocs = [
-    {title:'Кодекс корпоративной этики', cat:'Корпоративные документы', aud:'Все', ver:'v8.1', updated:'2026-09-15'},
-    {title:'Политика поддержки труда', cat:'Корпоративные документы', aud:'Склад', ver:'v2.4', updated:'2026-09-02'}
-  ];
-  const surveys = [
-    {title:'Оценка первого месяца', question:'Как вы оцениваете адаптацию?', options:'1;2;3;4;5', aud:'По сотруднику', sent:'12 из 15', status:'Активна'},
-    {title:'Новый опрос по корпоративной культуре', question:'Что можно улучшить?', options:'Скорость;Комфорт;Среда;Другое', aud:'Общий', sent:'4 из 28', status:'Черновик'}
-  ];
-  const evals = [
-    {empId:101, emp:'Анна Михайлова', stage:'День 14', sent:'Отправлена', by:'Руководитель адаптации', prev:4, cur:3},
-    {empId:102, emp:'Игорь Кузнецов', stage:'День 20', sent:'Проверена', by:'Наставник', prev:5, cur:4}
-  ];
-  const ideas = [
-    {text:'Добавить быстрые обновления на адаптационные встречи', date:'2026-09-18'},
-    {text:'Сделать единый шаблон обратной связи по задачам', date:'2026-09-20'}
-  ];
-  const tasks = {
-    101:[{title:'Знакомство с HR-процессами', day:1, from:'10:00', to:'11:00', place:'Переговорная 2', respId:104, resp:'Елена Соловьева', status:'Проверена руководителем'},{title:'Согласовать адаптационный план', day:3, from:'11:30', to:'12:00', place:'Кабинет HR', respId:104, resp:'Елена Соловьева', status:'Выполнена'},{title:'Обучение регламентам', day:7, from:'09:00', to:'10:30', place:'Переговорная 1', respId:104, resp:'Елена Соловьева', status:'Ожидает проверки'}],
-    102:[{title:'Ознакомление с оборудованием', day:1, from:'09:00', to:'10:30', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Выполнена'},{title:'Выполнить инструктаж по ТБ', day:2, from:'11:00', to:'12:00', place:'Кабинет охраны труда', respId:103, resp:'Ольга Петрова', status:'Ожидает проверки'},{title:'Подтвердить рабочие процессы', day:10, from:'13:00', to:'14:00', place:'Производственный участок', respId:103, resp:'Ольга Петрова', status:'Назначена'}]
+function emptyData(){
+  return {
+    employees:[],
+    positions:[],
+    materials:[],
+    faq:[],
+    docs:[],
+    templates:[],
+    corpDocs:[],
+    surveys:[],
+    surveyResponses:[],
+    feedbackMessages:[],
+    evals:[],
+    ideas:[],
+    tasks:{},
+    users:[],
+    accessRoleVersion:1,
+    topicHelpers:{}
   };
-  const users = [
-    {name:'Елена Соловьева', login:'e.soloveva', role:'HR', status:'Активна'},
-    {name:'Анна Михайлова', login:'a.mikhaylova', role:'Сотрудник с адаптацией', employeeId:101, status:'Активна'},
-    {name:'Игорь Кузнецов', login:'i.kuznetsov', role:'Сотрудник с адаптацией', employeeId:102, status:'Активна'},
-    {name:'Ольга Петрова', login:'o.petrova', role:'Сотрудник — руководитель адаптации', employeeId:103, managedEmployeeIds:[102], status:'Активна'}
-  ];
-  return {employees,positions,materials:[],faq,history:'Компания ProSafe работает по модели «первый месяц — приоритет». Для новых сотрудников важно быстро понять регламенты, роли и культуру команды.',docs,templates,corpDocs,surveys,surveyResponses:[],feedbackMessages:[],evals,ideas,tasks,users,accessRoleVersion:1,topicHelpers:{'Отпуск':[104,103],'Пропуск и доступ':[103,104],'IT и учётные записи':[103,104]}};
 }
-const DEFAULT = seedData();
+const DEFAULT = emptyData();
 let DB = load();
 function load(){
   try{
@@ -156,7 +121,15 @@ function load(){
     return data;
   }catch(e){ return Object.assign({}, DEFAULT); }
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify(DB));
+    return true;
+  }catch(error){
+    toast('Не удалось сохранить изменения в этом браузере. Проверьте свободное место.');
+    return false;
+  }
+}
 
 const EMPLOYEE_ROLES = ['Сотрудник','Сотрудник с адаптацией','Сотрудник — руководитель адаптации'];
 const isEmployeeRole = role => EMPLOYEE_ROLES.includes(role);
@@ -305,7 +278,7 @@ function saveEmployeeCard(id){
   $('dlg').close();
   if(document.body.dataset.page === 'employee') renderEmployeePortal();
   else if(window.PAGE_RENDER) window.PAGE_RENDER();
-  toast('Карточка сотрудника сохранена');
+  toast('Изменения карточки сохранены только в этом браузере; Supabase не изменён');
 }
 
 // Простая форма создания (материалы, FAQ, документы, опросы, пользователи)
@@ -480,22 +453,6 @@ async function saveEmployee(){
     adaptation_enabled:EMP.adapt
   };
   try{
-    if(currentUser()?.demo){
-      const id = Date.now();
-      const e = {
-        id, name:input.name, pos:input.job_title, dept:input.department, dir:input.direction,
-        mgr:r['Руководитель адаптации']||'—', phone:input.phone||'—', email:input.email,
-        contacts:true, adapt:input.adaptation_enabled, start:input.start_date||'',
-        status:input.adaptation_enabled?'Активна':'Без адаптации', resp:{...r}
-      };
-      DB.employees.push(e);
-      if(EMP.adapt) DB.tasks[id] = EMP.plan.map(task => ({...task,status:'Назначена'}));
-      save();
-      $('dlg').close();
-      if(window.PAGE_RENDER) window.PAGE_RENDER();
-      toast('Демо-карточка сохранена только в этом браузере; учетная запись Supabase не создавалась');
-      return;
-    }
     const created = await manageSupabaseEmployee({action:'create_employee',employee:input});
     const id = supabaseEmployeeAppId(created.employee);
     const e = {
@@ -586,50 +543,151 @@ function renderHome(){
 }
 
 const TOPICS = ['Отпуск','Пропуск и доступ','Зарплата и табель','Оборудование и ТБ','IT и учётные записи','Командировки'];
-function renderHistoryView(){
-  const view = $('history-view');
-  const editor = $('history-text');
-  const wrap = $('history-editor-wrap');
-  const editBtn = $('history-edit-btn');
-  if(!view) return;
-  const text = (DB.history || '').trim();
-  const isEditing = !!(wrap && !wrap.hidden);
-  if(editor && document.activeElement !== editor && !isEditing){
-    editor.value = DB.history || '';
-  }
-  if(view){
-    if(text){
-      view.classList.remove('empty');
-      view.textContent = text;
-    } else {
-      view.classList.add('empty');
-      view.textContent = 'История компании пока не заполнена.';
-    }
-  }
-  if(wrap){ wrap.hidden = !isEditing; }
-  if(editBtn){ editBtn.hidden = isEditing; }
+function companyHistoryMarkup(){
+  return `
+    <article class="company-history">
+      <div class="company-history-progress" aria-hidden="true"></div>
+      <div class="company-history-wrap">
+        <header class="company-history-hero">
+          <div class="company-history-label">Портал для онбординга · О компании</div>
+          <h2 class="company-history-display">История PROSAFE</h2>
+          <p class="company-history-lede">PROSAFE GROUP — российский производитель специальной обуви и спецодежды с повышенными защитными свойствами. Мы делаем работу профессионалов безопасной, а отдых — комфортным. Нам доверяют крупнейшие промышленные компании и организации России.</p>
+        </header>
+
+        <section class="company-history-section" aria-labelledby="company-history-path">
+          <div class="company-history-label">Путь компании · 25+ лет</div>
+          <h3 id="company-history-path">От фабрики «Скороход» до собственного бренда</h3>
+          <ol class="company-history-timeline">
+            <li><p class="company-history-year accent">1999</p><p>Компания основана в Санкт-Петербурге на базе производственных мощностей обувной фабрики «Скороход». Первым предприятием группы стало ООО «ЭлитСпецОбувь».</p></li>
+            <li><p class="company-history-year">2018</p><p>Группа стала эксклюзивным представителем трекинговой обуви ELKLAND в России.</p></li>
+            <li class="now"><p class="company-history-year accent">2020</p><p>Компания провела масштабный ребрендинг и сменила название на PROSAFE.</p></li>
+            <li><p class="company-history-year">Сегодня</p><p>Современная, технологичная и активно развивающаяся компания с собственной производственной базой.</p></li>
+          </ol>
+        </section>
+
+        <section class="company-history-section" aria-labelledby="company-history-brands">
+          <div class="company-history-label">Разные направления</div>
+          <h3 id="company-history-brands">Четыре бренда группы</h3>
+          <p>PROSAFE GROUP развивает несколько брендов. Выберите бренд, чтобы увидеть, для чего он.</p>
+          <div class="company-history-tabs" role="tablist" aria-label="Бренды группы">
+            <button class="company-history-tab" type="button" role="tab" id="company-history-tab-0" aria-controls="company-history-brand-0" aria-selected="true" tabindex="0">PROSAFE</button>
+            <button class="company-history-tab" type="button" role="tab" id="company-history-tab-1" aria-controls="company-history-brand-1" aria-selected="false" tabindex="-1">ELKLAND</button>
+            <button class="company-history-tab" type="button" role="tab" id="company-history-tab-2" aria-controls="company-history-brand-2" aria-selected="false" tabindex="-1">WANNGO</button>
+            <button class="company-history-tab" type="button" role="tab" id="company-history-tab-3" aria-controls="company-history-brand-3" aria-selected="false" tabindex="-1">MUD&amp;SNOW</button>
+          </div>
+          <div class="company-history-brand" role="tabpanel" id="company-history-brand-0" aria-labelledby="company-history-tab-0"><h4>PROSAFE</h4><p>Специальная обувь и спецодежда с защитными свойствами.</p></div>
+          <div class="company-history-brand" role="tabpanel" id="company-history-brand-1" aria-labelledby="company-history-tab-1" hidden><h4>ELKLAND</h4><p>Высокотехнологичная трекинговая обувь, эксклюзивно представленная в России с 2018 года.</p></div>
+          <div class="company-history-brand" role="tabpanel" id="company-history-brand-2" aria-labelledby="company-history-tab-2" hidden><h4>WANNGO</h4><p>Обувь для активного отдыха, туризма и города.</p></div>
+          <div class="company-history-brand" role="tabpanel" id="company-history-brand-3" aria-labelledby="company-history-tab-3" hidden><h4>MUD&amp;SNOW</h4><p>Сапоги для охоты и рыбалки для разных температурных режимов.</p></div>
+        </section>
+
+        <section class="company-history-section" aria-labelledby="company-history-scale">
+          <div class="company-history-label">Масштаб</div>
+          <h3 id="company-history-scale">PROSAFE сегодня в цифрах</h3>
+          <div class="company-history-stats">
+            <div class="company-history-stat"><b data-to="300" data-suffix="+">300+</b><span>специалистов в команде</span></div>
+            <div class="company-history-stat"><b data-to="10000" data-suffix=" м²">10 000 м²</b><span>производственная база</span></div>
+            <div class="company-history-stat"><b data-to="500" data-suffix="+">500+</b><span>позиций в ассортименте</span></div>
+            <div class="company-history-stat"><b data-to="3000" data-suffix="+">3 000+</b><span>компаний в клиентской базе</span></div>
+            <div class="company-history-stat"><b data-to="1500" data-suffix="+">1 500+</b><span>выигранных тендеров</span></div>
+            <div class="company-history-stat"><b>СНГ</b><span>поставки по всей России и в страны СНГ</span></div>
+          </div>
+          <p class="company-history-stat-copy">Собственное конструкторское бюро и швейные площадки, представительства в Москве, Калининграде и Кирове, склад в Санкт-Петербурге.</p>
+          <p>Среди клиентов — Мечел, РУСАЛ, КАМАЗ, Газпром, OZON, Магнит, Мираторг, ЛСР и другие крупные компании.</p>
+        </section>
+
+        <section class="company-history-section" aria-labelledby="company-history-values">
+          <div class="company-history-label">Ценности</div>
+          <h3 id="company-history-values">Что объединяет нашу команду</h3>
+          <div class="company-history-values">
+            <article><h4>Качество и ответственность</h4><p>Продукция связана с безопасностью человека, поэтому внимание к деталям и ответственное отношение к работе имеют особое значение.</p></article>
+            <article><h4>Профессионализм</h4><p>Мы развиваем компетенции, обмениваемся опытом и стремимся находить эффективные решения.</p></article>
+            <article><h4>Командная работа</h4><p>Общий результат зависит от взаимодействия подразделений. Своевременная передача информации, взаимопомощь и соблюдение договорённостей помогают работать слаженно.</p></article>
+            <article><h4>Развитие и открытость новому</h4><p>Мы любим своё дело и продолжаем развивать компанию и её бренды, готовы учиться и предлагать новые идеи.</p></article>
+          </div>
+        </section>
+
+        <footer class="company-history-closing">
+          <div class="company-history-label">Для нового сотрудника</div>
+          <h3 class="company-history-display">Теперь вы — часть нашей истории</h3>
+          <p>В PROSAFE можно видеть результат своей работы не только внутри своей задачи, но и в масштабе продукта и компании, которой доверяют тысячи людей. Каждый новый сотрудник приносит в команду свои знания, опыт и идеи.</p>
+          <p>Желаем комфортной адаптации, интересных задач, профессионального роста и успешной работы вместе с коллегами.</p>
+          <p class="company-history-welcome">Добро пожаловать в PROSAFE GROUP!</p>
+        </footer>
+      </div>
+      <button class="company-history-to-top" type="button" hidden>Наверх</button>
+    </article>`;
 }
-function toggleHistoryEditor(show){
-  const wrap = $('history-editor-wrap');
-  const view = $('history-view');
-  const editor = $('history-text');
-  const editBtn = $('history-edit-btn');
-  if(!wrap || !editor) return;
-  if(show){
-    editor.value = DB.history || '';
-    wrap.hidden = false;
-    if(view) view.hidden = true;
-    if(editBtn) editBtn.hidden = true;
-    setTimeout(() => editor.focus(), 0);
-  } else {
-    wrap.hidden = true;
-    if(view) view.hidden = false;
-    if(editBtn) editBtn.hidden = false;
-    renderHistoryView();
+function initCompanyHistory(mount){
+  if(!mount) return;
+  const root = mount.querySelector('.company-history');
+  if(!root) return;
+  const tabs = [...root.querySelectorAll('[role="tab"]')];
+  const panels = [...root.querySelectorAll('[role="tabpanel"]')];
+  const showBrand = index => {
+    tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+    });
+    panels.forEach((panel, i) => { panel.hidden = i !== index; });
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => showBrand(index));
+    tab.addEventListener('keydown', event => {
+      const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length
+        : event.key === 'ArrowLeft' ? (index - 1 + tabs.length) % tabs.length : -1;
+      if(next < 0) return;
+      event.preventDefault();
+      tabs[next].focus();
+      showBrand(next);
+    });
+  });
+
+  const progressBar = root.querySelector('.company-history-progress');
+  const backTop = root.querySelector('.company-history-to-top');
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const updateScrollControls = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    if(progressBar) progressBar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    if(backTop) backTop.hidden = window.scrollY < 600;
+  };
+  window.addEventListener('scroll', updateScrollControls, {passive:true});
+  updateScrollControls();
+  backTop?.addEventListener('click', () => window.scrollTo({top:0,behavior:reducedMotion ? 'auto' : 'smooth'}));
+
+  const counters = root.querySelectorAll('.company-history-stat b[data-to]');
+  const countUp = element => {
+    const target = Number(element.dataset.to);
+    const suffix = element.dataset.suffix || '';
+    let start = null;
+    const step = timestamp => {
+      if(start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / 900, 1);
+      const value = Math.round(target * (1 - Math.pow(1 - progress, 3)));
+      element.textContent = value.toLocaleString('ru-RU') + suffix;
+      if(progress < 1) requestAnimationFrame(step);
+    };
+    element.textContent = `0${suffix}`;
+    requestAnimationFrame(step);
+  };
+  if(!reducedMotion && 'IntersectionObserver' in window){
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          countUp(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.6});
+    counters.forEach(counter => observer.observe(counter));
   }
 }
 function renderPeople(){
-  renderHistoryView();
+  const historyMount = $('company-history-content');
+  if(historyMount){
+    historyMount.innerHTML = companyHistoryMarkup();
+    initCompanyHistory(historyMount);
+  }
   set('faq-list', DB.faq.length ? DB.faq.map(q => `<div class="card" style="margin-bottom:12px"><h3>${esc(q.q)}</h3><p>${esc(q.a)}</p></div>`).join('') : '<div class="card empty">Вопросов пока нет</div>');
   DIRS.forEach(d => set('dir-cnt-' + d, DB.employees.filter(e => e.dir === d).length));
   renderOrg();
@@ -773,27 +831,6 @@ function openFaq(){
     DB.faq.push({q:value.q,a:value.a});
   });
 }
-async function saveHistory(){
-  const value = ($('history-text') || {}).value || '';
-  const text = value.trim();
-  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
-  try{
-    await supabaseRequest('/rest/v1/company_history?on_conflict=slug',{
-      method:'POST',
-      body:{slug:'company',title:'История компании',body:text,is_published:true},
-      accessToken:session?.access_token,
-      prefer:'resolution=merge-duplicates,return=minimal'
-    });
-  }catch(error){
-    toast(`Не удалось сохранить историю компании: ${error.message}`);
-    return;
-  }
-  DB.history = text;
-  save();
-  toggleHistoryEditor(false);
-  toast('Сохранено');
-}
-
 function renderStaff(){
   const q = ($('staff-global-q') && $('staff-global-q').value) || '';
   renderStaffSearch(q);
@@ -817,18 +854,10 @@ function renderDocs(){
   set('corp-table', tbl(['Название','Категория','Доступно','Версия','Обновлён'], DB.corpDocs.map(d => [esc(d.title), esc(d.cat), esc(d.aud), esc(d.ver), esc(d.updated)]), 'Материалов пока нет'));
   renderDocSearch(($('doc-q') || {}).value || '');
 }
-function downloadDoc(title, type){
-  const safeTitle = String(title || 'document').replace(/[\\/<>:"|?*]+/g, '').trim() || 'document';
-  const blob = new Blob([`Документ: ${safeTitle}\nТип: ${type}\nДата: ${today()}\n\nСодержимое загружается из локального прототипа.`], {type: 'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${safeTitle}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  toast('Файл скачан');
+function downloadDoc(title){
+  const item = [...DB.docs,...DB.templates,...DB.corpDocs].find(document => document.title === title);
+  if(!item){ toast('Материал не найден в Supabase'); return; }
+  uploadOrOpenEmployeeMaterial(item).catch(error => toast(`Не удалось открыть материал: ${error.message}`));
 }
 function renderDocSearch(q){
   const s = q.trim().toLowerCase();
@@ -849,7 +878,7 @@ function renderDocSearch(q){
               <strong>${esc(d.title)}</strong>
               <div class="hint">${esc(d.cat)} · ${esc(d.ver)}</div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}', 'Документ')">Скачать</button>
+            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}')">Скачать</button>
           </div>
         `).join('') : '<div class="card empty">Документы пока нет</div>'}
       </div>
@@ -861,7 +890,7 @@ function renderDocSearch(q){
               <strong>${esc(d.title)}</strong>
               <div class="hint">${esc(d.cat)} · ${esc(d.ver)}</div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}', 'Шаблон')">Скачать</button>
+            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}')">Скачать</button>
           </div>
         `).join('') : '<div class="card empty">Шаблонов пока нет</div>'}
       </div>
@@ -873,7 +902,7 @@ function renderDocSearch(q){
               <strong>${esc(d.title)}</strong>
               <div class="hint">${esc(d.cat)} · ${esc(d.ver)}</div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}', 'Корпоративный документ')">Скачать</button>
+            <button class="btn btn-primary" type="button" onclick="downloadDoc('${esc(d.title || '')}')">Скачать</button>
           </div>
         `).join('') : '<div class="card empty">Материалов пока нет</div>'}
       </div>
@@ -1029,6 +1058,144 @@ function renderPositionPlan(){
       <div class="meta">День ${esc(t.day || 1)} · ${esc(t.from || '—')} – ${esc(t.to || '—')} · Место: ${esc(t.place || '—')} · Ответственный: ${esc(t.resp || 'HR')}</div>
     </div>
   `).join('') : '<div class="card empty">Для этой должности шаблон пока пуст. Добавьте шаги адаптации.</div>';
+}
+const PLAN_CSV_HEADERS = ['Задача','День адаптации','Время с','Время до','Место','Ответственный'];
+function csvCell(value){
+  const text = String(value ?? '');
+  return /[;"\r\n]/.test(text) ? `"${text.replace(/"/g,'""')}"` : text;
+}
+function downloadAdaptationTemplate(){
+  const content = `\uFEFF${PLAN_CSV_HEADERS.join(';')}\r\n`;
+  const blob = new Blob([content], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'plan-adaptacii-shablon.csv';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  toast('Пустой шаблон скачан');
+}
+function parsePlanCsv(text){
+  const rows = [];
+  let delimiter = ';';
+  let delimiters = {',':0,';':0};
+  let inHeaderQuotes = false;
+  for(let i = 0; i < text.length && text[i] !== '\n' && text[i] !== '\r'; i++){
+    if(text[i] === '"' && text[i + 1] === '"'){ i++; continue; }
+    if(text[i] === '"'){ inHeaderQuotes = !inHeaderQuotes; continue; }
+    if(!inHeaderQuotes && (text[i] === ';' || text[i] === ',')) delimiters[text[i]]++;
+  }
+  if(delimiters[','] > delimiters[';']) delimiter = ',';
+  let row = [], cell = '', quoted = false;
+  for(let i = 0; i < text.length; i++){
+    const char = text[i];
+    if(quoted){
+      if(char === '"' && text[i + 1] === '"'){ cell += '"'; i++; }
+      else if(char === '"') quoted = false;
+      else cell += char;
+    }else if(char === '"' && cell === ''){
+      quoted = true;
+    }else if(char === delimiter){
+      row.push(cell); cell = '';
+    }else if(char === '\n' || char === '\r'){
+      if(char === '\r' && text[i + 1] === '\n') i++;
+      row.push(cell); rows.push(row); row = []; cell = '';
+    }else{
+      cell += char;
+    }
+  }
+  if(quoted) throw new Error('В CSV не закрыты кавычки.');
+  if(cell || row.length){
+    row.push(cell);
+    rows.push(row);
+  }
+  return rows;
+}
+function normalizeCsvHeader(value){
+  return String(value || '').replace(/^\uFEFF/,'').trim().toLocaleLowerCase('ru');
+}
+function readCsvFile(file){
+  return file.arrayBuffer().then(buffer => {
+    const bytes = new Uint8Array(buffer);
+    try{
+      return new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+    }catch(error){
+      try{
+        return new TextDecoder('windows-1251',{fatal:true}).decode(bytes);
+      }catch(decodeError){
+        throw new Error('Не удалось прочитать файл. Сохраните его как CSV в кодировке UTF-8 и попробуйте снова.');
+      }
+    }
+  });
+}
+async function importAdaptationPlan(input){
+  const file = input.files?.[0];
+  input.value = '';
+  if(!file) return;
+  if(!currentUser() || currentUser().role !== 'HR'){
+    toast('Импорт планов доступен только HR');
+    return;
+  }
+  const position = DB.positions.find(item => item.name === $('plan-pos')?.value);
+  if(!position){
+    toast('Сначала выберите должность');
+    return;
+  }
+  try{
+    const content = (await readCsvFile(file)).replace(/^\uFEFF/,'');
+    const rows = parsePlanCsv(content);
+    const header = rows.shift()?.map(normalizeCsvHeader) || [];
+    const expected = PLAN_CSV_HEADERS.map(normalizeCsvHeader);
+    if(header.length !== expected.length || expected.some((name,index) => header[index] !== name)){
+      throw new Error(`Проверьте заголовки CSV. Используйте скачанный шаблон: ${PLAN_CSV_HEADERS.join('; ')}.`);
+    }
+    const errors = [];
+    const tasks = [];
+    rows.forEach((row,index) => {
+      if(row.every(value => !String(value || '').trim())) return;
+      const line = index + 2;
+      if(row.length > expected.length){
+        errors.push(`Строка ${line}: лишние столбцы.`);
+        return;
+      }
+      const [titleRaw,dayRaw,fromRaw,toRaw,placeRaw,respRaw] = row;
+      const title = String(titleRaw || '').trim();
+      const dayText = String(dayRaw || '').trim();
+      const from = String(fromRaw || '').trim();
+      const to = String(toRaw || '').trim();
+      const day = Number(dayText);
+      if(!title) errors.push(`Строка ${line}: заполните задачу.`);
+      if(!/^\d+$/.test(dayText) || day < 1 || day > 60) errors.push(`Строка ${line}: день адаптации должен быть от 1 до 60.`);
+      if(from && !/^([01]\d|2[0-3]):[0-5]\d$/.test(from)) errors.push(`Строка ${line}: время «с» укажите в формате ЧЧ:ММ.`);
+      if(to && !/^([01]\d|2[0-3]):[0-5]\d$/.test(to)) errors.push(`Строка ${line}: время «до» укажите в формате ЧЧ:ММ.`);
+      if(from && to && from > to) errors.push(`Строка ${line}: время окончания раньше времени начала.`);
+      if(title && /^\d+$/.test(dayText) && day >= 1 && day <= 60 &&
+         (!from || /^([01]\d|2[0-3]):[0-5]\d$/.test(from)) &&
+         (!to || /^([01]\d|2[0-3]):[0-5]\d$/.test(to)) && (!from || !to || from <= to)){
+        tasks.push({
+          title, day, from, to,
+          place:String(placeRaw || '').trim() || '—',
+          resp:String(respRaw || '').trim() || 'HR'
+        });
+      }
+    });
+    if(!rows.length || !tasks.length && !errors.length) errors.push('Добавьте в файл хотя бы одну задачу.');
+    if(errors.length) throw new Error(errors.slice(0,12).join('\n') + (errors.length > 12 ? `\nИ ещё ошибок: ${errors.length - 12}.` : ''));
+    if(position.tpl?.length && !confirm(`Заменить все ${position.tpl.length} задач шаблона «${position.name}» на ${tasks.length} задач из файла?`)) return;
+    const previousTasks = position.tpl;
+    position.tpl = tasks;
+    position.updated = today();
+    if(!save()){
+      position.tpl = previousTasks;
+      return;
+    }
+    renderAdapt();
+    toast(`Импортировано задач: ${tasks.length}`);
+  }catch(error){
+    alert(`Не удалось импортировать план:\n${error.message}`);
+  }
 }
 function openPlanTaskEditor(index){
   const select = $('plan-pos');
@@ -1554,43 +1721,15 @@ async function loadSupabaseEmployeeContent(){
   const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
   if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
   const token = session.access_token;
-  const [historyRows,faqRows,orgUnits,employeeRows,contactRows,materialRows] = await Promise.all([
-    supabaseRequest('/rest/v1/company_history?select=title,body,updated_at&is_published=eq.true&order=updated_at.desc&limit=1',{accessToken:token}),
+  const [faqRows,orgUnits,employeeRows,contactRows,materialRows] = await Promise.all([
     supabaseRequest('/rest/v1/faqs?select=question,answer,sort_order&is_published=eq.true&order=sort_order.asc',{accessToken:token}),
     supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:token}),
     supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,manager_id,start_date,status,adaptation_enabled,directory_visible,org_units(id,code,name,parent_id)',{accessToken:token}),
     supabaseRequest('/rest/v1/employee_contacts?select=employee_id,phone,email,visible_to_employees',{accessToken:token}),
     supabaseRequest('/rest/v1/materials?select=id,kind,title,category,version,storage_path,audience_unit_id,featured,updated_at&is_published=eq.true&order=featured.desc,title.asc',{accessToken:token})
   ]);
-  if(historyRows[0]) DB.history = historyRows[0].body;
   DB.faq = faqRows.map(row => ({q:row.question,a:row.answer}));
-  const unitById = new Map(orgUnits.map(unit => [unit.id,unit]));
-  const unitRoot = unit => {
-    let current = unit;
-    while(current?.parent_id && unitById.has(current.parent_id)) current = unitById.get(current.parent_id);
-    return current;
-  };
-  const contactsByEmployeeId = new Map(contactRows.map(contact => [contact.employee_id,contact]));
-  employeeRows.forEach(row => {
-    const unit = row.org_units || unitById.get(row.org_unit_id);
-    const root = unitRoot(unit);
-    const contact = contactsByEmployeeId.get(row.id);
-    const stableId = supabaseEmployeeAppId(row);
-    const person = emp(stableId) || {id:stableId,phone:'',email:'',contacts:false,resp:{}};
-    Object.assign(person,{
-      name:row.display_name,
-      pos:row.job_title,
-      dept:unit?.name || '',
-      dir:root?.name || unit?.name || '',
-      start:row.start_date || '',
-      status:row.status === 'active' ? 'Активна' : row.status,
-      adapt:row.adaptation_enabled,
-      phone:contact?.phone || '',
-      email:contact?.email || '',
-      contacts:Boolean(contact?.visible_to_employees)
-    });
-    if(!emp(stableId)) DB.employees.push(person);
-  });
+  const unitById = syncSupabaseEmployees(orgUnits,employeeRows,contactRows);
   const convertMaterial = (row,kind) => {
     const audience = row.audience_unit_id ? unitById.get(row.audience_unit_id) : null;
     return {
@@ -1609,16 +1748,11 @@ async function loadSupabaseEmployeeContent(){
   DB.corpDocs = materialRows.filter(row => row.kind === 'corporate').map(row => convertMaterial(row,'corpDocs'));
   DB.employees.sort((a,b) => a.name.localeCompare(b.name,'ru'));
 }
-async function loadSupabaseDirectory(){
-  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
-  if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
-  const [orgUnits,employeeRows,contactRows] = await Promise.all([
-    supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:session.access_token}),
-    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,start_date,status,adaptation_enabled,org_units(id,code,name,parent_id)',{accessToken:session.access_token}),
-    supabaseRequest('/rest/v1/employee_contacts?select=employee_id,phone,email,visible_to_employees',{accessToken:session.access_token})
-  ]);
+function syncSupabaseEmployees(orgUnits,employeeRows,contactRows){
   const unitById = new Map(orgUnits.map(unit => [unit.id,unit]));
   const contactsByEmployeeId = new Map(contactRows.map(contact => [contact.employee_id,contact]));
+  const previousEmployees = DB.employees;
+  DB.employees = [];
   const unitRoot = unit => {
     let current = unit;
     while(current?.parent_id && unitById.has(current.parent_id)) current = unitById.get(current.parent_id);
@@ -1629,7 +1763,7 @@ async function loadSupabaseDirectory(){
     const root = unitRoot(unit);
     const contact = contactsByEmployeeId.get(row.id);
     const id = supabaseEmployeeAppId(row);
-    const person = emp(id) || {id,resp:{}};
+    const person = previousEmployees.find(employee => Number(employee.id) === Number(id)) || {id,phone:'',email:'',contacts:false,resp:{}};
     Object.assign(person,{
       name:row.display_name,
       pos:row.job_title,
@@ -1642,8 +1776,19 @@ async function loadSupabaseDirectory(){
       email:contact?.email || '',
       contacts:Boolean(contact?.visible_to_employees)
     });
-    if(!emp(id)) DB.employees.push(person);
+    DB.employees.push(person);
   });
+  return unitById;
+}
+async function loadSupabaseDirectory(){
+  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+  if(!session?.access_token) throw new Error('Сессия Supabase завершилась. Войдите в портал ещё раз.');
+  const [orgUnits,employeeRows,contactRows] = await Promise.all([
+    supabaseRequest('/rest/v1/org_units?select=id,code,name,parent_id',{accessToken:session.access_token}),
+    supabaseRequest('/rest/v1/employees?select=id,seed_key,display_name,job_title,org_unit_id,start_date,status,adaptation_enabled,org_units(id,code,name,parent_id)',{accessToken:session.access_token}),
+    supabaseRequest('/rest/v1/employee_contacts?select=employee_id,phone,email,visible_to_employees',{accessToken:session.access_token})
+  ]);
+  syncSupabaseEmployees(orgUnits,employeeRows,contactRows);
   DB.employees.sort((a,b) => a.name.localeCompare(b.name,'ru'));
 }
 async function loadSupabaseAccessUsers(){
@@ -1668,63 +1813,44 @@ async function loadSupabaseAccessUsers(){
 }
 async function uploadOrOpenEmployeeMaterial(item){
   if(!item.storagePath){
-    downloadDoc(item.title,'Материал');
-    return;
+    throw new Error('Для этого материала ещё не загружен файл в Supabase Storage.');
   }
-  const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
-  const result = await supabaseRequest(`/storage/v1/object/sign/prosafe-documents/${item.storagePath.split('/').map(encodeURIComponent).join('/')}`,{
-    method:'POST',
-    body:{expiresIn:60},
-    accessToken:session?.access_token
-  });
-  if(!result?.signedURL) throw new Error('Supabase не вернул ссылку для скачивания файла.');
-  window.open(result.signedURL.startsWith('http') ? result.signedURL : `${SUPABASE_URL}/storage/v1${result.signedURL}`,'_blank','noopener');
+  const fileWindow = window.open('about:blank','_blank');
+  if(!fileWindow) throw new Error('Разрешите всплывающие окна, чтобы открыть файл.');
+  try{
+    const session = JSON.parse(localStorage.getItem(SUPABASE_SESSION_KEY) || 'null');
+    const result = await supabaseRequest(`/storage/v1/object/sign/prosafe-documents/${item.storagePath.split('/').map(encodeURIComponent).join('/')}`,{
+      method:'POST',
+      body:{expiresIn:60},
+      accessToken:session?.access_token
+    });
+    if(!result?.signedURL) throw new Error('Supabase не вернул ссылку для скачивания файла.');
+    fileWindow.opener = null;
+    fileWindow.location.replace(result.signedURL.startsWith('http') ? result.signedURL : `${SUPABASE_URL}/storage/v1${result.signedURL}`);
+  }catch(error){
+    fileWindow.close();
+    throw error;
+  }
 }
 function currentUser(){
   try{
-    const demoAccount = JSON.parse(localStorage.getItem(DEMO_ACCOUNT_KEY) || 'null');
-    if(demoAccount?.demo === true && SUPABASE_ROLE_NAMES && Object.values(SUPABASE_ROLE_NAMES).includes(demoAccount.role)) return demoAccount;
     const account = JSON.parse(localStorage.getItem(SUPABASE_ACCOUNT_KEY) || 'null');
     return account && SUPABASE_ROLE_NAMES && Object.values(SUPABASE_ROLE_NAMES).includes(account.role) ? account : null;
   }
-  catch(e){ return null; }
+  catch{ return null; }
 }
 function logout(){
-  localStorage.removeItem(DEMO_ACCOUNT_KEY);
   clearSupabaseSession();
   location.replace('login.html');
-}
-function startDemoLogin(role){
-  const isEmployee = role === 'employee';
-  const account = isEmployee
-    ? {demo:true,id:'demo-employee',name:'Анна Михайлова',login:'a.mikhaylova@prosafe.ru',email:'a.mikhaylova@prosafe.ru',role:'Сотрудник с адаптацией',employeeId:101,managedEmployeeIds:[],status:'Активна'}
-    : {demo:true,id:'demo-hr',name:'Елена Соловьева',login:'e.soloveva@prosafe.ru',email:'e.soloveva@prosafe.ru',role:'HR',employeeId:104,managedEmployeeIds:[],status:'Активна'};
-  try{
-    clearSupabaseSession();
-    localStorage.setItem(DEMO_ACCOUNT_KEY,JSON.stringify(account));
-    location.replace(isEmployee ? 'employee.html?tab=overview' : 'home.html');
-  }catch(error){
-    const message = $('login-error');
-    if(message){
-      message.textContent = `Не удалось запустить демо-вход: ${error.message}`;
-      message.hidden = false;
-    }
-  }
 }
 function renderLogin(){
   const user = currentUser();
   if(user){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
-  const demoHr = $('demo-login-hr');
-  const demoEmployee = $('demo-login-employee');
-  if(demoHr && demoEmployee){
-    demoHr.addEventListener('click',() => startDemoLogin('hr'));
-    demoEmployee.addEventListener('click',() => startDemoLogin('employee'));
-    return;
-  }
   const form = $('login-form');
   if(!form) return;
   form.addEventListener('submit', async event => {
     event.preventDefault();
+    if(!form.reportValidity()) return;
     const email = $('login-name').value.trim().toLowerCase();
     const password = $('login-password').value;
     const error = $('login-error');
@@ -1746,8 +1872,8 @@ function renderLogin(){
       submit.disabled = false;
     }
   });
-  $('login-password').addEventListener('input', () => {
-    $('login-password').removeAttribute('aria-invalid');
+  form.addEventListener('input', event => {
+    event.target.removeAttribute('aria-invalid');
     $('login-error').hidden = true;
   });
 }
@@ -1890,12 +2016,12 @@ function renderEmployeePortal(){
     <label for="employee-people-q">Найти сотрудника</label><input id="employee-people-q" placeholder="ФИО, должность или отдел" oninput="renderEmployeePeople(this.value)">
     <div id="employee-people-list" style="margin-top:14px">${empTable(DB.employees,'Сотрудников пока нет')}</div>`);
 
-  set('employee-history', `
-    <div class="history-shell">
-      <div class="history-header"><div><div class="history-eyebrow">О компании</div><h2>История компании</h2></div></div>
-      <div class="history-meta">Информация доступна только для просмотра.</div>
-      <div class="history-view">${esc((DB.history || '').trim() || 'История компании пока не заполнена.')}</div>
-    </div>`);
+  set('employee-history', '<div id="employee-company-history-content"></div>');
+  const employeeHistoryMount = $('employee-company-history-content');
+  if(employeeHistoryMount){
+    employeeHistoryMount.innerHTML = companyHistoryMarkup();
+    initCompanyHistory(employeeHistoryMount);
+  }
   set('employee-org', `<div class="employee-section-intro"><span class="survey-kicker">Команда ProSafe</span><h2>Оргструктура</h2><p class="hint">Организационная структура доступна только для просмотра.</p></div><div id="employee-org-chart" class="org-chart">${orgChartMarkup()}</div>`);
   set('employee-faq', `
     <div class="employee-section-intro"><span class="survey-kicker">Помощь</span><h2>Частые вопросы</h2><p class="hint">Ответы доступны только для просмотра.</p></div>
@@ -2145,7 +2271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const p = document.body.dataset.page;
   let user;
   try{
-    user = currentUser()?.demo ? currentUser() : await restoreSupabaseSession();
+    user = await restoreSupabaseSession();
   }catch(error){
     const main = $('view') || document.querySelector('.login-card');
     if(main){
@@ -2161,8 +2287,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if(!user){ location.replace('login.html'); return; }
   if(p === 'welcome'){ location.replace(isEmployeeRole(user.role) ? 'employee.html' : 'home.html'); return; }
   if(p === 'employee' && !isEmployeeRole(user.role)){ location.replace('home.html'); return; }
-  const demoMode = user.demo === true;
-  if(!demoMode && (p === 'employee' || p === 'people' || p === 'docs')){
+  if(isEmployeeRole(user.role) && p !== 'employee'){ location.replace('employee.html'); return; }
+  if(p === 'employee' || p === 'people' || p === 'docs'){
     try{
       await loadSupabaseEmployeeContent();
     }catch(error){
@@ -2177,7 +2303,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
   }
-  if(!demoMode && p === 'access'){
+  if(p === 'access'){
     try{
       await loadSupabaseDirectory();
       await loadSupabaseAccessUsers();
@@ -2193,7 +2319,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
   }
-  if(!demoMode && p === 'staff'){
+  if(['home','adapt','reports','surveys'].includes(p)){
     try{
       await loadSupabaseDirectory();
     }catch(error){
@@ -2214,7 +2340,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderEmployeePortal();
     return;
   }
-  if(isEmployeeRole(user.role)){ location.replace('employee.html'); return; }
   injectDialogs(); renderAside(); bindTabs();
   window.PAGE_RENDER = PAGES[p] || null;
   if(window.PAGE_RENDER) PAGE_RENDER();

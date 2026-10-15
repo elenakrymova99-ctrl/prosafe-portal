@@ -13,14 +13,17 @@
     <section class="login-card" aria-labelledby="login-title">
       <a class="login-brand" href="login.html">On Boarding <span>в ProSafe</span></a>
       <div class="login-kicker">Единое пространство команды</div>
-      <h1 id="login-title">Демо-вход в портал</h1>
-      <p class="login-intro">Выберите роль для просмотра демонстрационной версии портала.</p>
-      <div id="login-error" class="login-error" role="alert" hidden></div>
-      <div class="demo-login-actions">
-        <button class="btn btn-primary" id="demo-login-hr" type="button">Зайти как HR</button>
-        <button class="btn" id="demo-login-employee" type="button">Зайти как сотрудник</button>
-      </div>
-      <p class="login-disclaimer">Демо-режим работает только в этом браузере. Изменения не сохраняются в Supabase, а эти кнопки не создают реальные учетные записи.</p>
+      <h1 id="login-title">Вход в ProSafe</h1>
+      <p class="login-intro">Войдите с корпоративной учётной записью, созданной HR.</p>
+      <form id="login-form" novalidate>
+        <label for="login-name">Корпоративная почта</label>
+        <input id="login-name" name="email" type="email" autocomplete="username" required>
+        <label for="login-password">Пароль</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <div id="login-error" class="login-error" role="alert" aria-live="assertive" hidden></div>
+        <button class="btn btn-primary login-submit" type="submit">Войти</button>
+      </form>
+      <p class="login-disclaimer">Роль и доступы проверяются по профилю в Supabase. Если вы забыли пароль, обратитесь к HR.</p>
     </section>
     <aside class="login-aside" aria-hidden="true">
       <div class="login-aside-mark">P</div>
